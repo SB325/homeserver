@@ -1,0 +1,127 @@
+include:
+  # - modules/er_engine/compose_engine.yml 
+  # - modules/er_mapper/compose_mapper.yml 
+  # - work/Entity_Resolution_Containers/modules/senzing_web_ui/compose_senzing_ui.yml 
+  - work/Entity_Resolution_Containers/modules/er_streamlit_ui/compose_streamlit.yml 
+
+services:
+  postgres:
+    image: postgis/postgis
+    env_file:
+      - .env
+    shm_size: 2gb 
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+      - POSTGRES_DB=${DEF_DB_NAME}
+      - PGDATA=/data/postgres
+    # /mnt/bulkStorage is the 4TB hard disk mount
+    volumes:
+      - ${PG_STORAGE}:/data/postgres
+      - ${SQL_FILE_DIR}:/home
+      - ${SENZING_PROJECT_PATH}:/senzing
+    restart: unless-stopped
+    networks:
+      - er_network
+      - homeserver
+    profiles:
+      - er
+    ports:
+      - "5432:5432"
+    container_name: postgres_container
+
+  vespa:
+    image: vespaengine/vespa-generic-intel-x86_64 # vespaengine/vespa
+    user: vespa
+    env_file:
+      - .env
+    hostname: vespa-container
+    ports:
+      - ${VESPA_UI_PORT}:8080
+      - 19070:19070
+      - 19071:19071
+      - 19100:19100
+      - 19050:19050
+      - 20092:19092
+    environment:
+      VESPA_CONFIGSERVERS: "vespa-container"
+      VESPA_CONFIGSERVER_JVMARGS: "-Xms32M -Xmx128M"
+      VESPA_CONFIGPROXY_JVMARGS: "-Xms32M -Xmx32M"
+    volumes:
+      - ${VESPA_VAR_STORAGE}:/opt/vespa/var
+      - ${VESPA_LOG_STORAGE}:/opt/vespa/logs
+    command: configserver,services
+    networks:
+     - homeserver
+    container_name: vespa_container
+
+  pgadmin:
+    image: dpage/pgadmin4:8.0
+    environment:
+        - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+        - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ${PGADMIN_STORAGE}:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT}:80"
+    networks:
+     - homeserver
+    container_name: pgadmin_service
+
+  ollama:
+    image: ollama/ollama
+    restart: unless-stopped
+    user: root
+    volumes:
+        - ./ollama:/root/.ollama
+    ports:
+        - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+    container_name: ollama
+    
+  proxy:
+    build:
+      context: ./proxy/
+      dockerfile: Dockerfile
+      args:
+          - SRC_IMG=nginx
+          - SRC_TAG=latest
+          - no_cache
+    volumes:
+      - "./proxy/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./certs/crunchy-dyndns.crt:/etc/ssl/certs/crunchy-dyndns.crt"
+      - "./certs/crunchy-dyndns.key:/etc/ssl/private/crunchy-dyndns.key"
+    ports:
+      - "443:443"
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - seccomp:unconfined
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+     - pgadmin 
+    #  - vespa
+     - streamlit_ui
+    networks:
+     - er_network
+     - homeserver
+    container_name: proxy_service
+
+networks:
+  homeserver:
+    name: homeserver
+    labels:
+      com.example.description: "home docker network"
+  er_network:
+    name: er_network
+    labels:
+      com.example.description: "ER Service Network"

@@ -1,0 +1,1 @@
+DROP TABLE :schema.:table_to_drop CASCADE;
