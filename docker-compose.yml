@@ -110,7 +110,7 @@ services:
     depends_on:
      - pgadmin 
     #  - vespa
-     - streamlit_ui
+    #  - streamlit_er
     networks:
      - er_network
      - homeserver
