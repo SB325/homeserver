@@ -2,7 +2,7 @@ include:
   # - modules/er_engine/compose_engine.yml 
   # - modules/er_mapper/compose_mapper.yml 
   # - work/Entity_Resolution_Containers/modules/senzing_web_ui/compose_senzing_ui.yml 
-  - work/Entity_Resolution_Containers/modules/er_streamlit_ui/compose_streamlit.yml 
+  # - work/Entity_Resolution_Containers/modules/er_streamlit_ui/compose_streamlit.yml 
 
 services:
   postgres:
@@ -26,34 +26,10 @@ services:
       - homeserver
     profiles:
       - er
+      - llm
     ports:
       - "5432:5432"
     container_name: postgres_container
-
-  vespa:
-    image: vespaengine/vespa-generic-intel-x86_64 # vespaengine/vespa
-    user: vespa
-    env_file:
-      - .env
-    hostname: vespa-container
-    ports:
-      - ${VESPA_UI_PORT}:8080
-      - 19070:19070
-      - 19071:19071
-      - 19100:19100
-      - 19050:19050
-      - 20092:19092
-    environment:
-      VESPA_CONFIGSERVERS: "vespa-container"
-      VESPA_CONFIGSERVER_JVMARGS: "-Xms32M -Xmx128M"
-      VESPA_CONFIGPROXY_JVMARGS: "-Xms32M -Xmx32M"
-    volumes:
-      - ${VESPA_VAR_STORAGE}:/opt/vespa/var
-      - ${VESPA_LOG_STORAGE}:/opt/vespa/logs
-    command: configserver,services
-    networks:
-     - homeserver
-    container_name: vespa_container
 
   pgadmin:
     image: dpage/pgadmin4:8.0
@@ -68,7 +44,51 @@ services:
       - "${PGADMIN_PORT}:80"
     networks:
      - homeserver
+    profiles:
+      - llm
+    depends_on:
+     - postgres
     container_name: pgadmin_service
+
+  vespa:
+    env_file: .env
+    image: vespa_image
+    pull_policy: "never"
+    build: 
+      context: ./vespa
+      dockerfile: Dockerfile
+    user: vespa
+    hostname: vespa-container
+    ports:
+      - ${VESPA_API_PORT}:8080
+      - 19070:19070
+      - 19071:19071
+      - 4000:443
+      # - 19100:19100
+      # - 19050:19050
+      # - 20092:19092
+      # - 5005:5005
+    environment:
+      VESPA_CONFIGSERVERS: "vespa-container"
+      VESPA_CONFIGSERVER_JVMARGS: "-Xms32M -Xmx128M"
+      VESPA_CONFIGPROXY_JVMARGS: "-Xms32M -Xmx32M"
+      VESPA_CLI_DATA_PLANE_TRUST_ALL: true
+    volumes:
+      - ${VESPA_VAR_STORAGE}:/opt/vespa/var
+      - ${VESPA_LOG_STORAGE}:/opt/vespa/logs
+    command: configserver,services
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    networks:
+     - homeserver
+    profiles:
+      - llm
+    container_name: vespa_container
 
   ollama:
     image: ollama/ollama
@@ -83,7 +103,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ["1"]
+              device_ids: ["0"]
               capabilities: [gpu]
     container_name: ollama
     
@@ -109,11 +129,11 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
      - pgadmin 
-    #  - vespa
-    #  - streamlit_er
     networks:
      - er_network
      - homeserver
+    profiles:
+      - llm
     container_name: proxy_service
 
 networks:
