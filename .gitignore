@@ -1,4 +1,8 @@
-certs
-ollama
-work
-apps
+**/certs/
+ollama/
+work/
+apps/
+.env
+apc_ups/
+**/.venv/
+*.tar.gz

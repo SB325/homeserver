@@ -1,0 +1,88 @@
+services:
+  spark-master:
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    image: our-own-apache-spark:3.4.0
+    pull_policy: "never"
+    ports:
+      - "9090:8080"
+      - "7077:7077"
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+       - ./master-log/spark-master.out:/opt/spark/logs/spark-master.out
+       - ./worker-log/spark-worker.out:/opt/spark/logs/spark-worker.out
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+    networks:
+      - homeserver
+    profiles:
+      - llm
+      - spark
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: spark-master
+
+  spark-worker-a:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: our-own-apache-spark:3.4.0
+    pull_policy: "never"
+    ports:
+      - "9091:8080"
+      - "7000:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=10G
+      - SPARK_DRIVER_MEMORY=2G
+      - SPARK_EXECUTOR_MEMORY=10G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-a
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+    networks:
+      - homeserver
+    profiles:
+      - llm
+      - spark
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: spark-worker-a
+
+  spark-worker-b:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: our-own-apache-spark:3.4.0
+    pull_policy: "never"
+    ports:
+      - "9092:8080"
+      - "7001:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=10G
+      - SPARK_DRIVER_MEMORY=2G
+      - SPARK_EXECUTOR_MEMORY=10G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-b
+    volumes:
+      - ./apps:/opt/spark-apps
+      - ./data:/opt/spark-data
+    networks:
+      - homeserver
+    profiles:
+      - llm
+      - spark
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: spark-worker-b

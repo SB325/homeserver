@@ -1,12 +1,11 @@
 include:
-  # - modules/er_engine/compose_engine.yml 
-  # - modules/er_mapper/compose_mapper.yml 
-  # - work/Entity_Resolution_Containers/modules/senzing_web_ui/compose_senzing_ui.yml 
-  # - work/Entity_Resolution_Containers/modules/er_streamlit_ui/compose_streamlit.yml 
+  # - apps/Market_Reader/pipelines/fundamentals/vectorize/compose_vectorizer.yml
+  - spark/spark-compose.yml
+  - kibana/kibana-compose.yml
 
 services:
   postgres:
-    image: postgis/postgis
+    image: postgres:latest
     env_file:
       - .env
     shm_size: 2gb 
@@ -19,10 +18,8 @@ services:
     volumes:
       - ${PG_STORAGE}:/data/postgres
       - ${SQL_FILE_DIR}:/home
-      - ${SENZING_PROJECT_PATH}:/senzing
     restart: unless-stopped
     networks:
-      - er_network
       - homeserver
     profiles:
       - er
@@ -50,45 +47,169 @@ services:
      - postgres
     container_name: pgadmin_service
 
-  vespa:
-    env_file: .env
-    image: vespa_image
-    pull_policy: "never"
-    build: 
-      context: ./vespa
-      dockerfile: Dockerfile
-    user: vespa
-    hostname: vespa-container
-    ports:
-      - ${VESPA_API_PORT}:8080
-      - 19070:19070
-      - 19071:19071
-      - 4000:443
-      # - 19100:19100
-      # - 19050:19050
-      # - 20092:19092
-      # - 5005:5005
-    environment:
-      VESPA_CONFIGSERVERS: "vespa-container"
-      VESPA_CONFIGSERVER_JVMARGS: "-Xms32M -Xmx128M"
-      VESPA_CONFIGPROXY_JVMARGS: "-Xms32M -Xmx32M"
-      VESPA_CLI_DATA_PLANE_TRUST_ALL: true
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - ${VESPA_VAR_STORAGE}:/opt/vespa/var
-      - ${VESPA_LOG_STORAGE}:/opt/vespa/logs
-    command: configserver,services
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ["0"]
-              capabilities: [gpu]
+      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ x${ELASTIC_PASSWORD} == x ]; then
+          echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
+          exit 1;
+        elif [ x${KIBANA_PASSWORD} == x ]; then
+          echo "Set the KIBANA_PASSWORD environment variable in the .env file";
+          exit 1;
+        fi;
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: es01\n"\
+          "    dns:\n"\
+          "      - es01\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: es02\n"\
+          "    dns:\n"\
+          "      - es02\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "Setting kibana_system password";
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        echo "All done!";
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
     networks:
-     - homeserver
+      - homeserver
     profiles:
       - llm
-    container_name: vespa_container
+      - elastic
+    container_name: elastic-setup
+
+  es01:
+    depends_on:
+      elastic:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
+      - ${ELASTIC_NODE1_STORAGE}:/usr/share/elasticsearch/data
+      - ${ELASTIC_STORAGE}:/var/data/elasticsearch
+      - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - node.name=es01
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02
+      - discovery.seed_hosts=es02
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es01/es01.key
+      - xpack.security.http.ssl.certificate=certs/es01/es01.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es01/es01.key
+      - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${ELASTIC_LICENSE}
+      - xpack.ml.use_auto_machine_memory_percent=true
+      # - ES_JAVA_OPTS="-Xms32M -Xmx128M"
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      - homeserver
+    profiles:
+      - llm
+      - elastic
+    container_name: elastic-n01
+
+  es02:
+    depends_on:
+      - es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
+      - ${ELASTIC_NODE2_STORAGE}:/usr/share/elasticsearch/data
+      - ${ELASTIC_STORAGE}:/var/data/elasticsearch
+      - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
+    environment:
+      - node.name=es02
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02
+      - discovery.seed_hosts=es01
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es02/es02.key
+      - xpack.security.http.ssl.certificate=certs/es02/es02.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es02/es02.key
+      - xpack.security.transport.ssl.certificate=certs/es02/es02.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${ELASTIC_LICENSE}
+      - xpack.ml.use_auto_machine_memory_percent=true
+      # - ES_JAVA_OPTS="-Xms32M -Xmx128M"
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      - homeserver
+    profiles:
+      - llm
+      - elastic
+    container_name: elastic-n02
 
   ollama:
     image: ollama/ollama
@@ -105,6 +226,8 @@ services:
             - driver: nvidia
               device_ids: ["0"]
               capabilities: [gpu]
+    profiles:
+      - llm
     container_name: ollama
     
   proxy:
@@ -116,24 +239,24 @@ services:
           - SRC_TAG=latest
           - no_cache
     volumes:
-      - "./proxy/nginx.conf:/etc/nginx/nginx.conf:ro"
-      - "./certs/crunchy-dyndns.crt:/etc/ssl/certs/crunchy-dyndns.crt"
-      - "./certs/crunchy-dyndns.key:/etc/ssl/private/crunchy-dyndns.key"
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs/crunchy-dyndns.crt:/etc/ssl/certs/crunchy-dyndns.crt
+      - ./certs/crunchy-dyndns.key:/etc/ssl/private/crunchy-dyndns.key
+      - ${ELASTIC_CERT_LOC}/ca.crt:/etc/ssl/certs/elastic-ca.crt
+      - ${ELASTIC_CERT_LOC}/ca.key:/etc/ssl/certs/elastic-ca.key
     ports:
       - "443:443"
     restart: unless-stopped
     stop_grace_period: 30s
     security_opt:
       - seccomp:unconfined
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-     - pgadmin 
     networks:
-     - er_network
      - homeserver
     profiles:
       - llm
+    depends_on:
+      - kibana
+      - pgadmin
     container_name: proxy_service
 
 networks:
@@ -141,7 +264,3 @@ networks:
     name: homeserver
     labels:
       com.example.description: "home docker network"
-  er_network:
-    name: er_network
-    labels:
-      com.example.description: "ER Service Network"
