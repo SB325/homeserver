@@ -6,3 +6,5 @@ apps/
 apc_ups/
 **/.venv/
 *.tar.gz
+**/credentials.json
+**/token.json
