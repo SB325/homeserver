@@ -60,7 +60,7 @@ def get_emails(query: str = None):
   try:
     # Call the Gmail API
     service = build("gmail", "v1", credentials=creds) 
-    results = service.users().messages().list(userId="me", q=query).execute()
+    results = service.users().messages().list(userId="me", q=query + ', newer_than:1d').execute()
 
     messages = results.get('messages', None)
     msg_list = []
@@ -71,8 +71,7 @@ def get_emails(query: str = None):
             {
               'id': msg['id'], 
               'snippet': msg['snippet'],
-              'subject': [val['value'] for val in msg['payload']['headers'] 
-                  if 'Subject' in val['name']][0]
+              'receivedDate': msg['internalDate']
             }
         )
 
@@ -82,7 +81,22 @@ def get_emails(query: str = None):
 
   return msg_list
 
-
+def parse_tickers(snippet: str, receivedDate: str):
+  tickerliststring = snippet.split(':')[-1]
+  tickers = tickerliststring.split(',')
+  stripped = [v.strip() for v in tickers if v]
+  if stripped:
+    return {'tickers': [v for v in stripped if v.isalpha()],
+              'receivedDate': receivedDate}
+  
 if __name__ == "__main__":
   refresh_token()
   email_list = get_emails("alerts@thinkorswim.com")
+  ticker_list = []
+  for email in email_list:
+    email.pop('id')
+    tlist = parse_tickers(**email)
+    if tlist['tickers']:
+      ticker_list.append(tlist)
+  for val in ticker_list:
+    print(val)

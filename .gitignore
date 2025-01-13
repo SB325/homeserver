@@ -8,3 +8,4 @@ apc_ups/
 *.tar.gz
 **/credentials.json
 **/token.json
+htpasswd.txt
