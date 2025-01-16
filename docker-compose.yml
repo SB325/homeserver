@@ -246,8 +246,11 @@ services:
       - ${ELASTIC_CERT_LOC}/ca.key:/etc/ssl/certs/elastic-ca.key
     ports:
       - "443:443"
+      - "80:80"
     restart: unless-stopped
     stop_grace_period: 30s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     security_opt:
       - seccomp:unconfined
     networks:
