@@ -7,7 +7,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
-      - ${ELASTIC_CERT_LOC}:/usr/share/kibana/config/certs
+      - ./certs:/usr/share/kibana/config/certs
       - ${KIBANA_STORAGE}:/usr/share/kibana/data
     ports:
       - ${KIBANA_PORT}:5601

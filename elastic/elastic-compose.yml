@@ -2,7 +2,7 @@ services:
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
+      - ./certs:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
       bash -c '
@@ -66,8 +66,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
-      - ${ELASTIC_NODE1_STORAGE}:/usr/share/elasticsearch/data
+      - ./certs:/usr/share/elasticsearch/config/certs
       - ${ELASTIC_STORAGE}:/var/data/elasticsearch
       - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
     ports:
@@ -118,8 +117,7 @@ services:
       - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - ${ELASTIC_CERT_LOC}:/usr/share/elasticsearch/config/certs
-      - ${ELASTIC_NODE2_STORAGE}:/usr/share/elasticsearch/data
+      - ./certs:/usr/share/elasticsearch/config/certs
       - ${ELASTIC_STORAGE}:/var/data/elasticsearch
       - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
     environment:

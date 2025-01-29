@@ -93,7 +93,7 @@ services:
     profiles:
       - llm
     depends_on:
-      - kibana
+      # - kibana
       - pgadmin
     container_name: proxy_service
 
