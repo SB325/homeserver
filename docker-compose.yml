@@ -46,6 +46,7 @@ services:
     depends_on:
      - postgres
     container_name: pgadmin_service
+    
   ollama:
     image: ollama/ollama
     restart: unless-stopped
