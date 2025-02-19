@@ -80,6 +80,7 @@ services:
       - ./certs/crunchy-dyndns.key:/etc/ssl/private/crunchy-dyndns.key
       - ${ELASTIC_CERT_LOC}/ca.crt:/etc/ssl/certs/elastic-ca.crt
       - ${ELASTIC_CERT_LOC}/ca.key:/etc/ssl/certs/elastic-ca.key
+      - ./proxy/log:/var/log
     ports:
       - "443:443"
       - "80:80"
