@@ -67,8 +67,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
-      - ${ELASTIC_STORAGE}:/var/data/elasticsearch
-      - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
+      - ${ELASTIC_STORAGE}_n01:/usr/share/elasticsearch/data
     ports:
       - ${ES_PORT}:9200
     environment:
@@ -118,8 +117,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
-      - ${ELASTIC_STORAGE}:/var/data/elasticsearch
-      - ${ELASTIC_LOG_STORAGE}:/var/log/elasticsearch
+      - ${ELASTIC_STORAGE}_n02:/usr/share/elasticsearch/data
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
