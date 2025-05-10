@@ -3,7 +3,7 @@ include:
   - elastic/elastic-compose.yml
   - kibana/kibana-compose.yml
   - apps/Market_Reader/docker-compose.yml
-
+  
 services:
   postgres:
     image: postgres:latest
@@ -31,8 +31,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4:8.0
     environment:
-        - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
-        - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
     restart: unless-stopped
     user: root
     volumes:
@@ -73,7 +73,12 @@ services:
       args:
           - SRC_IMG=nginx
           - SRC_TAG=latest
+          - PROXY_USER=${PROXY_USER}
+          - PROXY_PASSWORD=${PROXY_PASSWORD}
           - no_cache
+    environment:
+      - PROXY_USER=${PROXY_USER}
+      - PROXY_PASSWORD=${PROXY_PASSWORD}
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs/crunchy-dyndns.crt:/etc/ssl/certs/crunchy-dyndns.crt
@@ -84,7 +89,7 @@ services:
     ports:
       - "443:443"
       - "80:80"
-    restart: unless-stopped
+    restart: no #unless-stopped
     stop_grace_period: 30s
     extra_hosts:
       - "host.docker.internal:host-gateway"

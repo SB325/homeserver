@@ -1,4 +1,5 @@
 **/certs/
+**/__pycache__/
 ollama/
 work/
 apps/
