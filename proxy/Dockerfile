@@ -12,6 +12,9 @@ RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install apache2-utils
 
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY crunchy.dyndns.org.crt /etc/ssl/certs/crunchy.dyndns.org.crt
+COPY crunchy.dyndns.org.key /etc/ssl/private/crunchy.dyndns.org.key
+
 COPY index_mrapp.html /usr/share/nginx/html/
 
 RUN htpasswd -b -c /etc/nginx/.htpasswd ${PROXY_USER} ${PROXY_PASSWORD}

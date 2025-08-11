@@ -1,0 +1,18 @@
+services:
+  wpmongo:
+    image: mongo:4.1-bionic
+    networks:
+      - homeserver
+    container_name: wpmongo
+  webprotege:
+    image: protegeproject/webprotege
+    restart: always
+    environment:
+      - webprotege.mongodb.host=wpmongo
+    ports:
+      - 5000:8080
+    depends_on:
+      - wpmongo
+    container_name: protege
+    networks:
+      - homeserver

@@ -14,7 +14,7 @@ services:
        - ./master-log/spark-master.out:/opt/spark/logs/spark-master.out
        - ./worker-log/spark-worker.out:/opt/spark/logs/spark-worker.out
     environment:
-      - SPARK_LOCAL_IP=spark-master
+      - SPARK_LOCAL_IP=${SPARK_LOCAL_IP}
       - SPARK_WORKLOAD=master
     networks:
       - homeserver
@@ -43,7 +43,7 @@ services:
       - SPARK_DRIVER_MEMORY=2G
       - SPARK_EXECUTOR_MEMORY=10G
       - SPARK_WORKLOAD=worker
-      - SPARK_LOCAL_IP=spark-worker-a
+      - SPARK_LOCAL_IP=${SPARK_LOCAL_IP}
     volumes:
       - ./apps:/opt/spark-apps
       - ./data:/opt/spark-data
@@ -74,7 +74,7 @@ services:
       - SPARK_DRIVER_MEMORY=2G
       - SPARK_EXECUTOR_MEMORY=10G
       - SPARK_WORKLOAD=worker
-      - SPARK_LOCAL_IP=spark-worker-b
+      - SPARK_LOCAL_IP=${SPARK_LOCAL_IP}
     volumes:
       - ./apps:/opt/spark-apps
       - ./data:/opt/spark-data

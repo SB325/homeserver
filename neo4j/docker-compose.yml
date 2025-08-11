@@ -1,0 +1,19 @@
+services:
+  neo4j:
+    image: neo4j:latest
+    volumes:
+      - /mnt/bulkStorage/neo4j/logs:/logs
+      - /mnt/bulkStorage/neo4j/import:/import
+      - /mnt/bulkStorage/neo4j/config:/config
+      - /mnt/bulkStorage/neo4j/data:/data
+      - /mnt/bulkStorage/neo4j/plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/your_password
+      - NEO4J_PLUGINS=["apoc", "genai", "bloom"]
+    ports:
+      - "7474:7474"  # Browser UI
+      - "7687:7687"  # Bolt API port
+    restart: unless-stopped
+    networks:
+      - homeserver
+    container_name: neo4j

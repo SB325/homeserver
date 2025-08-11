@@ -3,6 +3,9 @@ include:
   - elastic/elastic-compose.yml
   - kibana/kibana-compose.yml
   - apps/Market_Reader/docker-compose.yml
+  - neo4j/docker-compose.yml
+  # - protege/docker-compose.yml
+
   
 services:
   postgres:
@@ -45,7 +48,7 @@ services:
       - llm
     depends_on:
      - postgres
-    container_name: pgadmin_service
+    container_name: pgadmin
     
   ollama:
     image: ollama/ollama
@@ -55,6 +58,7 @@ services:
         - ./ollama:/root/.ollama
     ports:
         - "11434:11434"
+    tty: true
     deploy:
       resources:
         reservations:
@@ -62,27 +66,45 @@ services:
             - driver: nvidia
               device_ids: ["0"]
               capabilities: [gpu]
+    networks:
+     - homeserver
     profiles:
       - llm
     container_name: ollama
-    
+  
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+     - homeserver
+    profiles:
+      - llm
+    restart: unless-stopped
+
   proxy:
     build:
       context: ./proxy/
       dockerfile: Dockerfile
       args:
-          - SRC_IMG=nginx
-          - SRC_TAG=latest
-          - PROXY_USER=${PROXY_USER}
-          - PROXY_PASSWORD=${PROXY_PASSWORD}
-          - no_cache
+        - SRC_IMG=nginx
+        - SRC_TAG=latest
+        - PROXY_USER=${PROXY_USER}
+        - PROXY_PASSWORD=${PROXY_PASSWORD}
+        - no_cache
     environment:
       - PROXY_USER=${PROXY_USER}
       - PROXY_PASSWORD=${PROXY_PASSWORD}
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs/crunchy-dyndns.crt:/etc/ssl/certs/crunchy-dyndns.crt
-      - ./certs/crunchy-dyndns.key:/etc/ssl/private/crunchy-dyndns.key
       - ${ELASTIC_CERT_LOC}/ca.crt:/etc/ssl/certs/elastic-ca.crt
       - ${ELASTIC_CERT_LOC}/ca.key:/etc/ssl/certs/elastic-ca.key
       - ./proxy/log:/var/log
@@ -91,8 +113,6 @@ services:
       - "80:80"
     restart: no #unless-stopped
     stop_grace_period: 30s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     security_opt:
       - seccomp:unconfined
     networks:
