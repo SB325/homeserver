@@ -2,17 +2,25 @@ services:
   neo4j:
     image: neo4j:latest
     volumes:
-      - /mnt/bulkStorage/neo4j/logs:/logs
-      - /mnt/bulkStorage/neo4j/import:/import
-      - /mnt/bulkStorage/neo4j/config:/config
-      - /mnt/bulkStorage/neo4j/data:/data
-      - /mnt/bulkStorage/neo4j/plugins:/plugins
+      - ${BULK_STORAGE}/neo4j/logs:/logs
+      - ${BULK_STORAGE}/neo4j/import:/import
+      - ${BULK_STORAGE}/neo4j/config:/config
+      - ${BULK_STORAGE}/neo4j/data:/data
+      - ${BULK_STORAGE}/neo4j/plugins:/plugins
+      - ${BULK_STORAGE}/certs:/var/lib/neo4j/certificates
     environment:
-      - NEO4J_AUTH=neo4j/your_password
-      - NEO4J_PLUGINS=["apoc", "genai", "bloom"]
+      # - NEO4J_AUTH=${USERN}/${PASSWD}
+      # - NEO4J_PLUGINS=["apoc", "genai", "bloom"]
+      # - NEO4J_server_bolt_tls__level=OPTIONAL
+      # - NEO4J_dbms_security_auth__enabled=false
+      # - NEO4J_dbms_ssl_policy_bolt_private_key=crunchy.dyndns.org.key
+      # - NEO4J_dbms_ssl_policy_bolt_public_certificate=crunchy.dyndns.org.crt
+      # - NEO4J_server_bolt_listen__address=crunchy.dyndns.org/bolt/
+      # - NEO4J_server_bolt_advertised__address=crunchy.dyndns.org/bolt/
+      # - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     ports:
-      - "7474:7474"  # Browser UI
-      - "7687:7687"  # Bolt API port
+      - "${UI_PORT}:${UI_PORT}"  # Browser UI
+      - "${BOLT_PORT}:${BOLT_PORT}"  # Bolt API port
     restart: unless-stopped
     networks:
       - homeserver
