@@ -1,0 +1,23 @@
+services:
+  minio:
+    image: minio/minio:latest
+    pull_policy: if_not_present
+    ports:
+      - "${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}"
+      - "${MINIO_API_PORT}:${MINIO_API_PORT}"
+    environment:
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_CONSOLE_PORT_NUMBER: ${MINIO_CONSOLE_PORT}
+      # MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      # MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    shm_size: 1gb
+    networks:
+      - homeserver
+    command: server --console-address ":${MINIO_CONSOLE_PORT}" ${MINIO_STORAGE_DIR}
+    container_name: minio
+    
+
+
+

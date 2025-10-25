@@ -3,10 +3,10 @@ include:
   - elastic/elastic-compose.yml
   - kibana/kibana-compose.yml
   - apps/Market_Reader/docker-compose.yml
-  - neo4j/docker-compose.yml
-  # - protege/docker-compose.yml
+  # - neo4j/docker-compose.yml
+  - apps/Screen_Capture/server/docker-compose.yml
+  - minio/minio-compose.yaml
 
-  
 services:
   postgres:
     image: postgres:latest
