@@ -1,7 +1,7 @@
 # server.port: 5601
-# server.publicBaseUrl: "http://crunchy.dyndns.org:5601/kibana"
-# server.host: "localhost"
-# server.basePath: "/kibana"
+# server.publicBaseUrl: "http://crunchy.dyndns.org/kibana/"
+# server.host: "0.0.0.0"
+# server.basePath: "/kibana/"
 # # Specifies whether Kibana should rewrite requests that are prefixed with
 # # `server.basePath` or require that they are rewritten by your reverse proxy.
 # # This setting was effectively always `false` before Kibana 6.3 and will
