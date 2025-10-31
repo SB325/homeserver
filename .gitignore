@@ -11,5 +11,5 @@ apc_ups/
 **/token.json
 htpasswd.txt
 proxy/htpasswd.txt
-*.crt
-*.key
+**.crt
+**.key
