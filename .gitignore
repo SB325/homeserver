@@ -13,3 +13,4 @@ htpasswd.txt
 proxy/htpasswd.txt
 **.crt
 **.key
+**.log
