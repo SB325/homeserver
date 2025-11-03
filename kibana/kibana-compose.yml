@@ -1,10 +1,10 @@
 services:
   kibana:
     depends_on:
-      es01:
+      elastic:
         condition: service_healthy
-      es02:
-        condition: service_healthy
+      # es02:
+      #   condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
       - ./config:/usr/share/kibana/config
@@ -17,9 +17,10 @@ services:
       SERVER_NAME: kibana # defaults to 'your-hostname'
       SERVER_HOST: 0.0.0.0
       SERVER_BASEPATH: /kibana
+      ELASTICSEARCH_HOSTS: http://elastic:9200
       SERVER_REWRITEBASEPATH: false
       XPACK_SECURITY_ENABLED: false
-      XPACK_SECURITY_ENROLLMENT_ENABLED: true
+      XPACK_SECURITY_ENROLLMENT_ENABLED: false
       # XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 4cc57790c6dd1e707a3993cbc88c59c5
       # XPACK_REPORTING_ENCRYPTIONKEY: b755ef12860b8fb1fca351512f662fd5
       # XPACK_SECURITY_ENCRYPTIONKEY: 1cf6bdcfe739eac8da4479d9f46b325e
