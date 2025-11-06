@@ -1,11 +1,12 @@
 include:
   - spark/spark-compose.yml
-  - elastic/elastic-compose.yml
-  - kibana/kibana-compose.yml
   - apps/Market_Reader/docker-compose.yml
-  # - neo4j/docker-compose.yml
   - apps/Screen_Capture/server/docker-compose.yml
   - minio/minio-compose.yaml
+  - milvus/docker-compose.yml
+  # - neo4j/docker-compose.yml
+  # - elastic/elastic-compose.yml
+  # - kibana/kibana-compose.yml
 
 services:
   postgres:

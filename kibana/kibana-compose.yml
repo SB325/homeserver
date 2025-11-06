@@ -1,15 +1,13 @@
 services:
   kibana:
     depends_on:
-      elastic:
+      es01:
         condition: service_healthy
-      # es02:
-      #   condition: service_healthy
-    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    image: docker.elastic.co/kibana/kibana:${KIBANA_IMAGE_TAG}
     volumes:
       - ./config:/usr/share/kibana/config
       - ${KIBANA_STORAGE}:/usr/share/kibana/data
-    user: "kibana:kibana"
+    user: "kibana_system:kibana_system"
     ports:
       - ${KIBANA_PORT}:5601
     environment:
@@ -17,13 +15,19 @@ services:
       SERVER_NAME: kibana # defaults to 'your-hostname'
       SERVER_HOST: 0.0.0.0
       SERVER_BASEPATH: /kibana
-      ELASTICSEARCH_HOSTS: http://elastic:9200
+      ELASTICSEARCH_HOSTS: https://es01:9200
+      # ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       SERVER_REWRITEBASEPATH: false
-      XPACK_SECURITY_ENABLED: false
+      SERVER_SSL_CERTIFICATE: /usr/share/kibana/config/certs/es01/es01.crt
+      SERVER_SSL_KEY: /usr/share/kibana/config/certs/es01/es01.key
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: /usr/share/kibana/config/certs/ca/ca.crt
+      ELASTICSEARCH_SSL_CERTIFICATE_MODE: certificate
+      ELASTICSEARCH_SSL_VERIFICATION_MODE: none
+      XPACK_SECURITY_ENABLED: true
       XPACK_SECURITY_ENROLLMENT_ENABLED: false
-      # XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 4cc57790c6dd1e707a3993cbc88c59c5
-      # XPACK_REPORTING_ENCRYPTIONKEY: b755ef12860b8fb1fca351512f662fd5
-      # XPACK_SECURITY_ENCRYPTIONKEY: 1cf6bdcfe739eac8da4479d9f46b325e
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 4cc57790c6dd1e707a3993cbc88c59c5
+      XPACK_REPORTING_ENCRYPTIONKEY: b755ef12860b8fb1fca351512f662fd5
+      XPACK_SECURITY_ENCRYPTIONKEY: 1cf6bdcfe739eac8da4479d9f46b325e
     mem_limit: ${MEM_LIMIT}
     healthcheck:
       test:
