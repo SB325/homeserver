@@ -11,6 +11,7 @@ apc_ups/
 **/token.json
 htpasswd.txt
 proxy/htpasswd.txt
+proxy/log/
 **.crt
 **.key
 **.log
