@@ -8,3 +8,4 @@ yes | docker image prune -f
 yes | docker builder prune -f
 yes | docker container prune -f
 docker image rm $(docker image ls -a -q) -f
+docker system prune -a

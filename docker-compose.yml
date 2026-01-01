@@ -1,10 +1,12 @@
 include:
-  - spark/spark-compose.yml
+  # - spark/spark-compose.yml
+  - redis/docker-compose.yml
+  - kafka/docker-compose.yml
   - apps/Market_Reader/docker-compose.yml
   - apps/Screen_Capture/server/docker-compose.yml
   - minio/minio-compose.yaml
   - milvus/docker-compose.yml
-  # - neo4j/docker-compose.yml
+  - neo4j/docker-compose.yml
   # - elastic/elastic-compose.yml
   # - kibana/kibana-compose.yml
 
@@ -73,23 +75,23 @@ services:
       - llm
     container_name: ollama
   
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
-    container_name: open-webui
-    volumes:
-      - open-webui:/app/backend/data
-    depends_on:
-      - ollama
-    environment:
-      - 'OLLAMA_BASE_URL=http://ollama:11434'
-      - 'WEBUI_SECRET_KEY='
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    networks:
-     - homeserver
-    profiles:
-      - llm
-    restart: unless-stopped
+  # open-webui:
+  #   image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+  #   container_name: open-webui
+  #   volumes:
+  #     - open-webui:/app/backend/data
+  #   depends_on:
+  #     - ollama
+  #   environment:
+  #     - 'OLLAMA_BASE_URL=http://ollama:11434'
+  #     - 'WEBUI_SECRET_KEY='
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
+  #   networks:
+  #    - homeserver
+  #   profiles:
+  #     - llm
+  #   restart: unless-stopped
 
   proxy:
     build:
