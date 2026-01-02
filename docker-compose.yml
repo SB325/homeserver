@@ -1,5 +1,5 @@
 include:
-  # - spark/spark-compose.yml
+  - open_telemetry/docker-compose.yml
   - redis/docker-compose.yml
   - kafka/docker-compose.yml
   - apps/Market_Reader/docker-compose.yml
@@ -7,8 +7,7 @@ include:
   - minio/minio-compose.yaml
   - milvus/docker-compose.yml
   - neo4j/docker-compose.yml
-  # - elastic/elastic-compose.yml
-  # - kibana/kibana-compose.yml
+  - prometheus/docker-compose.yml
 
 services:
   postgres:

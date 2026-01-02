@@ -1,0 +1,15 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest 
+    ports:
+      - "9090:9090" 
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml 
+    depends_on:
+      - proxy
+    restart: unless-stopped 
+    profiles:
+      - llm
+    networks:
+     - homeserver
+    container_name: prometheus

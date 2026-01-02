@@ -1,0 +1,16 @@
+services:  
+  # OpenTelemetry Collector Service
+  otel:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./util/open_telemetry/collector-config.yaml:/etc/otelcol/config.yaml # Mount your configuration
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
+      # ... other ports for Prometheus, health checks, etc.
+    networks:
+     - homeserver
+    profiles:
+      - llm
+    container_name: otel
