@@ -4,9 +4,12 @@ services:
     ports:
       - "9090:9090" 
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml 
-    depends_on:
-      - proxy
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml 
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      # - '--storage.tsdb.path=/prometheus'
+      - '--web.external-url=https://crunchy.dyndns.org/prometheus'
+      - '--web.route-prefix=/prometheus/' 
     restart: unless-stopped 
     profiles:
       - llm

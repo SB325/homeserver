@@ -1,9 +1,17 @@
 services:
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     restart: unless-stopped
     environment:
       - GF_SERVER_ROOT_URL=https://www.crunchy.dyndns.org/grafana/
+    volumes:
+      - ./grafana.ini:/etc/grafana/grafana.ini
     ports:
       - '3000:3000'
+    depends_on:
+      - prometheus
+    profiles:
+      - llm
+    networks:
+     - homeserver
+    container_name: grafana
