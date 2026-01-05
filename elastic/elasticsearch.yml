@@ -1,4 +1,0 @@
-xpack:
-  ingest:
-    node:
-      enabled: true
