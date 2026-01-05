@@ -1,0 +1,38 @@
+services:  
+  # Loki, Grafana, Tempo, and Mimir/Prometheus, plus OpenTelemetry and Pyroscope Bundle Image
+  telemetry:
+    image: grafana/otel-lgtm:latest
+    # command: ["--config=/otel-lgtm/otelcol-config.yaml"]
+    environment:
+      - GF_SERVER_ROOT_URL=https://www.crunchy.dyndns.org/grafana/
+      - GF_SERVER_DOMAIN=crunchy.dyndns.org
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      # Optional: Enable detailed logging for components (uncomment as needed)
+      - ENABLE_LOGS_GRAFANA=true
+      - ENABLE_LOGS_LOKI=true
+      - ENABLE_LOGS_PROMETHEUS=true
+      - ENABLE_LOGS_TEMPO=true
+      - ENABLE_LOGS_PYROSCOPE=true
+      - ENABLE_LOGS_OTELCOL=true
+      - ENABLE_LOGS_ALL=true
+    volumes:
+      - ./otelcol-config.yaml:/otel-lgtm/otelcol-config.yaml  # Mount your configuration
+      - ./grafana.ini:/etc/grafana/grafana.ini
+      # Optional: Persist data across container restarts (adjust local paths as needed)
+      - ./loki-data:/loki
+      - ./prometheus-data:/prometheus
+      - ./tempo-data:/tempo
+      - ./pyroscope-data:/pyroscope
+    ports:
+      - "3000:3000" # Grafana port
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
+      # Prometheus port (if needed for direct scraping)
+      # - "9090:9090"
+      # Loki port (for Promtail or direct ingestion)
+      # - "3100:3100"
+    networks:
+     - homeserver
+    profiles:
+      - llm
+    container_name: telemetry

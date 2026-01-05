@@ -6,9 +6,7 @@ include:
   - minio/minio-compose.yaml
   - milvus/docker-compose.yml
   - neo4j/docker-compose.yml
-  - prometheus/docker-compose.yml
-  - grafana/docker-compose.yml
-  - open_telemetry/docker-compose.yml
+  - telemetry/docker-compose.yml
 
 services:
   postgres:
@@ -124,8 +122,7 @@ services:
       - llm
     depends_on:
       - pgadmin
-      - grafana
-      - prometheus
+      - telemetry
       - milvusui
     container_name: proxy_service
 
