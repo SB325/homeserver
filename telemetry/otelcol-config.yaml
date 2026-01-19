@@ -5,16 +5,22 @@ receivers:
         endpoint: 0.0.0.0:4317 # Default gRPC port
       http:
         endpoint: 0.0.0.0:4318 # Default HTTP port
-        cors:
-          allowed_origins:
-            - https://crunchy.dydndns.org/*
-  kafkametrics:
-    brokers: kafka:29092
-    protocol_version: 2.0.0
+        # cors:
+        #   allowed_origins:
+        #     - https://crunchy.dydndns.org/*
+  hostmetrics:
+    collection_interval: 10s # Or your desired interval
     scrapers:
-      - brokers
-      - topics
-      - consumers
+      cpu: {} # Enable CPU metrics
+      memory: {} # Enable Memory metrics
+      # Add other scrapers like disk, network as needed
+  # kafkametrics:
+  #   brokers: kafka:29092
+  #   protocol_version: 2.0.0
+  #   scrapers:
+  #     - brokers
+  #     - topics
+  #     - consumers
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver
   prometheus/collector:
     config:
@@ -55,32 +61,31 @@ exporters:
     verbosity: detailed
   debug/logs:
     verbosity: detailed
-  loki:
-    endpoint: http://loki:3100/loki/api/v1/push
+  debug/console:
+    verbosity: detailed
     # Optional: configure how OTLP attributes are mapped to Loki labels/metadata
     # see: grafana.com
-  tempo:
-    endpoint: tempo:4317
-    protocol: otlp
-
   prometheusremotewrite:
     endpoint: http://mimir:9009/api/v1/push
     # Optional: configure resource attribute promotion to labels
 
 service:
+  telemetry:
+    logs:
+      level: "debug"
   pipelines:
     metrics:
-      receivers: [otlp,prometheus/collector,kafkametrics]
+      receivers: [otlp,hostmetrics,prometheus/collector]
       processors: [batch]
-      exporters: [tempo,otlphttp/metrics,debug/metrics]
+      exporters: [prometheusremotewrite,otlphttp/metrics,debug/metrics,debug/console]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [prometheusremotewrite,otlphttp/traces,debug/traces]
+      exporters: [otlphttp/traces,debug/traces,debug/console]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [loki,otlphttp/logs,debug/logs]
+      exporters: [otlphttp/logs,debug/logs,debug/console]
     profiles:
       receivers: [otlp]
       exporters: [otlp/profiles]

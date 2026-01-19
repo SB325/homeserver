@@ -7,14 +7,20 @@ services:
       - GF_SERVER_ROOT_URL=https://www.crunchy.dyndns.org/grafana/
       - GF_SERVER_DOMAIN=crunchy.dyndns.org
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ORG_ROLE=admin
+      # - GF_AUTH_DISABLE_LOGIN_FORM=true
       # Optional: Enable detailed logging for components (uncomment as needed)
-      - ENABLE_LOGS_GRAFANA=true
-      - ENABLE_LOGS_LOKI=true
-      - ENABLE_LOGS_PROMETHEUS=true
-      - ENABLE_LOGS_TEMPO=true
-      - ENABLE_LOGS_PYROSCOPE=true
+      - ENABLE_LOGS_GRAFANA=false
+      - ENABLE_LOGS_LOKI=false
+      - ENABLE_LOGS_PROMETHEUS=false
+      - ENABLE_LOGS_TEMPO=false
+      - ENABLE_LOGS_PYROSCOPE=false
       - ENABLE_LOGS_OTELCOL=true
-      - ENABLE_LOGS_ALL=true
+      # - ENABLE_LOGS_ALL=true
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}
+      - OTEL_METRIC_EXPORT_TIMEOUT=${OTEL_METRIC_EXPORT_TIMEOUT}
+      - OTEL_LOG_LEVEL=${OTEL_LOG_LEVEL}
     volumes:
       - ./otelcol-config.yaml:/otel-lgtm/otelcol-config.yaml  # Mount your configuration
       - ./grafana.ini:/etc/grafana/grafana.ini
@@ -23,6 +29,13 @@ services:
       - ./prometheus-data:/prometheus
       - ./tempo-data:/tempo
       - ./pyroscope-data:/pyroscope
+    # healthcheck:
+    #   test: ["CMD", "/opt/health-check.sh"]
+    #   interval: 1m
+    #   timeout: 10s
+    #   retries: 10
+    #   start_period: 1m
+    #   start_interval: 10s
     ports:
       - "3000:3000" # Grafana port
       - "4317:4317" # OTLP gRPC receiver
