@@ -1,7 +1,7 @@
 include:
   - redis/docker-compose.yml
   - kafka/docker-compose.yml
-  # - apps/Market_Reader/docker-compose.yml
+  - apps/Market_Reader/docker-compose.yml
   - minio/minio-compose.yaml
   - milvus/docker-compose.yml
   - neo4j/docker-compose.yml

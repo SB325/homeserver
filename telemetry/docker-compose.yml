@@ -21,6 +21,7 @@ services:
       - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}
       - OTEL_METRIC_EXPORT_TIMEOUT=${OTEL_METRIC_EXPORT_TIMEOUT}
       - OTEL_LOG_LEVEL=${OTEL_LOG_LEVEL}
+      - OTEL_TRACES_EXPORTER=oltp
     volumes:
       - ./otelcol-config.yaml:/otel-lgtm/otelcol-config.yaml  # Mount your configuration
       - ./grafana.ini:/etc/grafana/grafana.ini

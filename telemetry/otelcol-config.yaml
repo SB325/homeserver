@@ -61,8 +61,8 @@ exporters:
     verbosity: detailed
   debug/logs:
     verbosity: detailed
-  debug/console:
-    verbosity: detailed
+  # debug/console:
+  #   verbosity: basic # normal, detailed
     # Optional: configure how OTLP attributes are mapped to Loki labels/metadata
     # see: grafana.com
   prometheusremotewrite:
@@ -77,15 +77,15 @@ service:
     metrics:
       receivers: [otlp,hostmetrics,prometheus/collector]
       processors: [batch]
-      exporters: [prometheusremotewrite,otlphttp/metrics,debug/metrics,debug/console]
+      exporters: [prometheusremotewrite,otlphttp/metrics,debug/metrics] #,debug/console]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/traces,debug/traces,debug/console]
+      exporters: [otlphttp/traces,debug/traces] #,debug/console]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/logs,debug/logs,debug/console]
+      exporters: [otlphttp/logs,debug/logs] #,debug/console]
     profiles:
       receivers: [otlp]
       exporters: [otlp/profiles]
