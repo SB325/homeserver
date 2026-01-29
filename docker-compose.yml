@@ -1,12 +1,12 @@
 include:
   - redis/docker-compose.yml
   - kafka/docker-compose.yml
-  - apps/Market_Reader/docker-compose.yml
-  - apps/Screen_Capture/server/docker-compose.yml
+  # - apps/Market_Reader/docker-compose.yml
   - minio/minio-compose.yaml
   - milvus/docker-compose.yml
   - neo4j/docker-compose.yml
   - telemetry/docker-compose.yml
+  - invokeai/docker-compose.yml
 
 services:
   postgres:
@@ -77,16 +77,30 @@ services:
   #   image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
   #   container_name: open-webui
   #   volumes:
-  #     - open-webui:/app/backend/data
+  #     - ./ollama/open-webui-data:/app/backend/data
   #   depends_on:
   #     - ollama
   #   environment:
   #     - 'OLLAMA_BASE_URL=http://ollama:11434'
   #     - 'WEBUI_SECRET_KEY='
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
+  #     - 'WEBUI_URL=https://${MY_DNS_NAME}/llm/'
+  #     - 'WEBUI_SESSION_COOKIE_SECURE=false'
+  #     - 'WEBUI_AUTH_COOKIE_SECURE=false'
+  #     - 'ENABLE_WEBSOCKET_SUPPORT=true'
+  #     - 'USE_OLLAMA_DOCKER=true'
+  #     - 'CORS_ALLOW_ORIGIN=*'
+  #   tty: true
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             device_ids: ["0"]
+  #             capabilities: [gpu]
   #   networks:
   #    - homeserver
+  #   ports:
+  #     - 3001:8080
   #   profiles:
   #     - llm
   #   restart: unless-stopped
@@ -106,8 +120,8 @@ services:
       - PROXY_PASSWORD=${PROXY_PASSWORD}
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./proxy/crunchy.dyndns.org.crt:/etc/ssl/certs/crunchy.dyndns.org.crt
-      - ./proxy/crunchy.dyndns.org.key:/etc/ssl/certs/crunchy.dyndns.org.key
+      - ./proxy/${MY_DNS_NAME}.crt:/etc/ssl/certs/${MY_DNS_NAME}.crt
+      - ./proxy/${MY_DNS_NAME}.key:/etc/ssl/certs/${MY_DNS_NAME}.key
       - ./proxy/log:/var/log
     ports:
       - "443:443"
@@ -124,6 +138,9 @@ services:
       - pgadmin
       - telemetry
       - milvusui
+      # - open-webui
+      - neo4j
+      - minio
     container_name: proxy_service
 
 networks:

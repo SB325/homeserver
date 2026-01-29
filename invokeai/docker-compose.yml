@@ -1,0 +1,23 @@
+services:
+  invokeai:
+    image: ghcr.io/invoke-ai/invokeai
+    restart: unless-stopped
+    volumes:
+        - /mnt/bulkStorage/invokeai:/invokeai
+    ports:
+        - "9090:9090"
+    environment:
+      - INVOKEAI_PORT=9090
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    networks:
+     - homeserver
+    profiles:
+      - ai
+    container_name: invokeai
