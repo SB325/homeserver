@@ -4,8 +4,8 @@ services:
     image: grafana/otel-lgtm:latest
     # command: ["--config=/otel-lgtm/otelcol-config.yaml"]
     environment:
-      - GF_SERVER_ROOT_URL=https://www.crunchy.dyndns.org/grafana/
-      - GF_SERVER_DOMAIN=crunchy.dyndns.org
+      - GF_SERVER_ROOT_URL=https://www.${MY_DNS_NAME}/grafana/
+      - GF_SERVER_DOMAIN=${MY_DNS_NAME}
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ORG_ROLE=admin
@@ -30,6 +30,7 @@ services:
       - ./prometheus-data:/prometheus
       - ./tempo-data:/tempo
       - ./pyroscope-data:/pyroscope
+      - ${GRAFANA_STORAGE}:/data/grafana
     # healthcheck:
     #   test: ["CMD", "/opt/health-check.sh"]
     #   interval: 1m

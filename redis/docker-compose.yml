@@ -8,4 +8,6 @@ services:
       - ${REDIS_PERSISTENT_STORAGE}:/data
     networks:
      - homeserver
+    depends_on:
+     - kafka
     container_name: redis

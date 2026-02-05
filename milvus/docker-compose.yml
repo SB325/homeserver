@@ -54,7 +54,7 @@ services:
     image: zilliz/attu:v2.5.3
     environment:
       MILVUS_URL: milvus:19530
-      HOST_URL: https://crunchy.dyndns.org/attu
+      HOST_URL: https://${MY_DNS_NAME}/attu
       SERVER_NAME: localhost
       SERVER_PORT: 8080
     ports:

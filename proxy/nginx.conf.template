@@ -1,0 +1,183 @@
+# upstream minio {
+#     server minio:9001;
+# }
+
+upstream telemetry {
+    server telemetry:3000;
+}
+
+upstream pgadmin {
+    server pgadmin:80;
+}
+
+# upstream neo4j {
+#     server neo4j:7474;
+# }
+
+# upstream invokeai {
+#     server invokeai:9090;
+# }
+
+# upstream bolt {
+#     server neo4j:7687;
+# }
+
+# upstream open-webui {
+#     server open-webui:3001;
+# }
+
+# upstream milvusui {
+#     server milvusui:8080;
+# }
+
+server {
+    listen       443 ssl;
+    server_name  crunchy ${MY_DNS_NAME};
+
+    ssl_certificate      /etc/ssl/certs/${MY_DNS_NAME}.crt;
+    ssl_certificate_key  /etc/ssl/private/${MY_DNS_NAME}.key;
+
+    ssl_session_cache    shared:SSL:1m;
+    ssl_session_timeout  5m;
+    proxy_ssl_verify on;
+
+    auth_basic           "Private Area";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+
+    location /pgadmin4/ {
+        proxy_pass http://pgadmin;
+        proxy_set_header X-Script-Name /pgadmin4;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        auth_basic on;  
+    }
+
+    location /grafana/ {
+        proxy_pass http://telemetry;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        auth_basic on;  
+    }
+
+    location /api/live/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_pass http://telemetry;
+    }
+
+    # location /minio/ {
+    #     proxy_pass http://minio/;
+    #     proxy_set_header X-Script-Name /minio;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     auth_basic on;  
+    # }
+
+    # location /neo4j/ {
+    #     proxy_pass http://neo4j/;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "upgrade";
+    #     auth_basic on;  
+    # }
+
+    # location /bolt/ {
+    #     proxy_pass http://neo4j/;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "upgrade";
+    #     auth_basic on;  
+    # }
+
+    # location /llm/ {
+    #     proxy_pass http://open-webui/;
+    #     proxy_set_header X-Script-Name /open-webui;
+    #     # sub_filter '"/_app/' '"/llm/_app/'; # Adding a rewrite rule for /_app/ based links.
+    #     # sub_filter '"/themes/' '"/llm/themes/'; # Similar rewrite rule for themes based on console errors.
+    #     # sub_filter_once off;
+    #     # rewrite /llm/(.*) /$1 break;
+
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "upgrade";
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     proxy_buffering off;
+    #     proxy_cache off;
+    #     auth_basic on;  
+    # }
+    
+    # location /imagegen/ {
+    #     proxy_pass http://invokeai/;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "Upgrade";
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     auth_basic on;  
+    # }
+
+    # location /attu/ {
+    #     proxy_pass http://milvusui/;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "Upgrade";
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     auth_basic on;  
+    # }
+
+    # location /socket.io/ {
+    #     proxy_pass http://milvusui/socket.io/;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "Upgrade";
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     auth_basic on;  
+    # }
+
+    # location /mrapp/ {
+    #     root   /usr/share/nginx/html;
+    #     index  index_mrapp.html;
+    #     try_files $uri $uri/ /index_mrapp.html;
+    #     auth_basic on;  
+    # }
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html;
+        auth_basic on;  
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root html;
+    }
+}
+

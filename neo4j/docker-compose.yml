@@ -13,10 +13,10 @@ services:
       - NEO4J_PLUGINS=["apoc", "genai", "bloom"]
       - NEO4J_server_bolt_tls__level=OPTIONAL
       - NEO4J_dbms_security_auth__enabled=false
-      - NEO4J_dbms_ssl_policy_bolt_private_key=crunchy.dyndns.org.key
-      - NEO4J_dbms_ssl_policy_bolt_public_certificate=crunchy.dyndns.org.crt
-      - NEO4J_server_bolt_listen__address=crunchy.dyndns.org/bolt/
-      - NEO4J_server_bolt_advertised__address=crunchy.dyndns.org/bolt/
+      - NEO4J_dbms_ssl_policy_bolt_private_key=${MY_DNS_NAME}.key
+      - NEO4J_dbms_ssl_policy_bolt_public_certificate=${MY_DNS_NAME}.crt
+      - NEO4J_server_bolt_listen__address=${MY_DNS_NAME}/bolt/
+      - NEO4J_server_bolt_advertised__address=${MY_DNS_NAME}/bolt/
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
     ports:
       - "${UI_PORT}:${UI_PORT}"  # Browser UI

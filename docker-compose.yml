@@ -108,18 +108,20 @@ services:
   proxy:
     build:
       context: ./proxy/
-      dockerfile: Dockerfile
       args:
         - SRC_IMG=nginx
         - SRC_TAG=latest
         - PROXY_USER=${PROXY_USER}
         - PROXY_PASSWORD=${PROXY_PASSWORD}
+        - MY_DNS_NAME=${MY_DNS_NAME}
         - no_cache
     environment:
       - PROXY_USER=${PROXY_USER}
       - PROXY_PASSWORD=${PROXY_PASSWORD}
+      - MY_DNS_NAME=${MY_DNS_NAME}
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
       - ./proxy/${MY_DNS_NAME}.crt:/etc/ssl/certs/${MY_DNS_NAME}.crt
       - ./proxy/${MY_DNS_NAME}.key:/etc/ssl/certs/${MY_DNS_NAME}.key
       - ./proxy/log:/var/log
@@ -137,10 +139,10 @@ services:
     depends_on:
       - pgadmin
       - telemetry
-      - milvusui
+      # - milvusui
       # - open-webui
-      - neo4j
-      - minio
+      # - neo4j
+      # - minio
     container_name: proxy_service
 
 networks:

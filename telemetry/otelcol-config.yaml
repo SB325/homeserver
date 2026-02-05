@@ -13,14 +13,10 @@ receivers:
     scrapers:
       cpu: {} # Enable CPU metrics
       memory: {} # Enable Memory metrics
-      # Add other scrapers like disk, network as needed
-  # kafkametrics:
-  #   brokers: kafka:29092
-  #   protocol_version: 2.0.0
-  #   scrapers:
-  #     - brokers
-  #     - topics
-  #     - consumers
+      disk: {}
+      load: {}
+      filesystem: {}
+      network: {}
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver
   prometheus/collector:
     config:
@@ -61,10 +57,6 @@ exporters:
     verbosity: detailed
   debug/logs:
     verbosity: detailed
-  # debug/console:
-  #   verbosity: basic # normal, detailed
-    # Optional: configure how OTLP attributes are mapped to Loki labels/metadata
-    # see: grafana.com
   prometheusremotewrite:
     endpoint: http://mimir:9009/api/v1/push
     # Optional: configure resource attribute promotion to labels
