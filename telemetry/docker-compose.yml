@@ -49,5 +49,5 @@ services:
     networks:
      - homeserver
     profiles:
-      - llm
+      - etl
     container_name: telemetry

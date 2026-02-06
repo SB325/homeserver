@@ -24,4 +24,6 @@ services:
     restart: unless-stopped
     networks:
       - homeserver
+    profiles:
+      - llm
     container_name: neo4j
