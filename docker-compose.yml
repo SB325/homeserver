@@ -7,6 +7,8 @@ include:
   - neo4j/docker-compose.yml
   - telemetry/docker-compose.yml
   - invokeai/docker-compose.yml
+  - harbor/docker-compose.yml
+  - jenkins/docker-compose.yml
 
 services:
   postgres:
@@ -27,7 +29,7 @@ services:
     networks:
       - homeserver
     profiles:
-      - llm
+      - main
     ports:
       - "5432:5432"
     container_name: postgres_container
@@ -46,7 +48,7 @@ services:
     networks:
      - homeserver
     profiles:
-      - llm
+      - main
     depends_on:
      - postgres
     container_name: pgadmin
@@ -105,7 +107,7 @@ services:
   #     - llm
   #   restart: unless-stopped
 
-  proxy:
+  proxy_home:
     build:
       context: ./proxy/
       args:
@@ -135,15 +137,14 @@ services:
     networks:
      - homeserver
     profiles:
-      - llm
+      - main
     depends_on:
       - pgadmin
-      - telemetry
       # - milvusui
       # - open-webui
       # - neo4j
       # - minio
-    container_name: proxy_service
+    container_name: proxy_home
 
 networks:
   homeserver:

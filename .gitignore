@@ -15,3 +15,4 @@ proxy/log/
 **.crt
 **.key
 **.log
+**harbor.yml

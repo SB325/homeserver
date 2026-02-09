@@ -10,6 +10,14 @@ upstream pgadmin {
     server pgadmin:80;
 }
 
+upstream jenkins {
+    server jenkins:8080;
+}
+
+upstream harbor {
+    server nginx:8080;
+}
+
 # upstream neo4j {
 #     server neo4j:7474;
 # }
@@ -69,6 +77,29 @@ server {
         proxy_set_header Connection $connection_upgrade;
         proxy_set_header Host $host;
         proxy_pass http://telemetry;
+    }
+
+    location /jenkins/ {
+        proxy_pass http://jenkins;
+        proxy_set_header X-Script-Name /jenkins;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Authorization "";
+        auth_basic on;  
+    }
+
+    location /harbor/ {
+        proxy_pass http://harbor;
+        proxy_set_header X-Script-Name /harbor;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        auth_basic on;  
     }
 
     # location /minio/ {

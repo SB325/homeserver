@@ -65,6 +65,7 @@ services:
       - "8080:8080"
     depends_on:
       - "milvus"
+      - proxy_home
     networks:
      - homeserver
     profiles:

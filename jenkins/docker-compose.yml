@@ -4,8 +4,20 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - jenkins_home:/var/jenkins_home
+      - ${JENKINS_STORAGE}:/var/jenkins_home
+    environment:
+      - JENKINS_OPTS="--prefix=/jenkins" # Optional: for sub-path access
+      - VIRTUAL_HOST=${MY_DNS_NAME}
+    networks:
+      - homeserver
+    container_name: jenkins
+    profiles:
+      - cicd
+
   ssh-agent:
     image: jenkins/ssh-agent
-volumes:
-  jenkins_home:
+    networks:
+      - homeserver
+    container_name: jenkins-ssh-agent
+    profiles:
+      - cicd

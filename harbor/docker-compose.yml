@@ -11,17 +11,24 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /var/log/harbor/:/var/log/docker/:z
+      - ${HARBOR_REGISTRY_STORAGE}/var/log/harbor/:/var/log/docker/:z
       - type: bind
-        source: ./common/config/log/logrotate.conf
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/log/logrotate.conf
         target: /etc/logrotate.d/logrotate.conf
+        bind:
+          create_host_path: true
       - type: bind
-        source: ./common/config/log/rsyslog_docker.conf
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/log/rsyslog_docker.conf
         target: /etc/rsyslog.d/rsyslog_docker.conf
+        bind:
+          create_host_path: true
     ports:
       - 127.0.0.1:1514:10514
     networks:
+      - homeserver
+    profiles:
       - harbor
+
   registry:
     image: goharbor/registry-photon:v2.14.2
     container_name: registry
@@ -33,16 +40,20 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/registry:/storage:z
-      - ./common/config/registry/:/etc/registry/:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/registry:/storage:z
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/registry/:/etc/registry/:z
       - type: bind
-        source: /data/secret/registry/root.crt
+        source: ${HARBOR_REGISTRY_STORAGE}/data/secret/registry/root.crt
         target: /etc/registry/root.crt
+        bind:
+          create_host_path: true
       - type: bind
-        source: ./common/config/shared/trust-certificates
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/shared/trust-certificates
         target: /harbor_cust_cert
+        bind:
+          create_host_path: true
     networks:
-      - harbor
+      - homeserver
     depends_on:
       - log
     logging:
@@ -50,11 +61,14 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "registry"
+    profiles:
+      - harbor
+
   registryctl:
     image: goharbor/harbor-registryctl:v2.14.2
     container_name: registryctl
     env_file:
-      - ./common/config/registryctl/env
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/registryctl/env
     restart: always
     cap_drop:
       - ALL
@@ -63,16 +77,20 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/registry:/storage:z
-      - ./common/config/registry/:/etc/registry/:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/registry:/storage:z
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/registry/:/etc/registry/:z
       - type: bind
-        source: ./common/config/registryctl/config.yml
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/registryctl/config.yml
         target: /etc/registryctl/config.yml
+        bind:
+          create_host_path: true
       - type: bind
-        source: ./common/config/shared/trust-certificates
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/shared/trust-certificates
         target: /harbor_cust_cert
+        bind:
+          create_host_path: true
     networks:
-      - harbor
+      - homeserver
     depends_on:
       - log
     logging:
@@ -80,6 +98,9 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "registryctl"
+    profiles:
+      - harbor
+
   postgresql:
     image: goharbor/harbor-db:v2.14.2
     container_name: harbor-db
@@ -92,11 +113,11 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/database:/var/lib/postgresql/data:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/database:/var/lib/postgresql/data:z
     networks:
-      harbor:
+      homeserver:
     env_file:
-      - ./common/config/db/env
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/db/env
     depends_on:
       - log
     logging:
@@ -105,11 +126,14 @@ services:
         syslog-address: "tcp://localhost:1514"
         tag: "postgresql"
     shm_size: '1gb'
+    profiles:
+      - harbor
+
   core:
     image: goharbor/harbor-core:v2.14.2
     container_name: harbor-core
     env_file:
-      - ./common/config/core/env
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/core/env
     restart: always
     cap_drop:
       - ALL
@@ -117,23 +141,31 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/ca_download/:/etc/core/ca/:z
-      - /data/:/data/:z
-      - ./common/config/core/certificates/:/etc/core/certificates/:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/ca_download/:/etc/core/ca/:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/:/data/:z
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/core/certificates/:/etc/core/certificates/:z
       - type: bind
-        source: ./common/config/core/app.conf
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/core/app.conf
         target: /etc/core/app.conf
+        bind:
+          create_host_path: true
       - type: bind
-        source: /data/secret/core/private_key.pem
+        source: ${HARBOR_REGISTRY_STORAGE}/data/secret/core/private_key.pem
         target: /etc/core/private_key.pem
+        bind:
+          create_host_path: true
       - type: bind
-        source: /data/secret/keys/secretkey
+        source: ${HARBOR_REGISTRY_STORAGE}/data/secret/keys/secretkey
         target: /etc/core/key
+        bind:
+          create_host_path: true
       - type: bind
-        source: ./common/config/shared/trust-certificates
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/shared/trust-certificates
         target: /harbor_cust_cert
+        bind:
+          create_host_path: true
     networks:
-      harbor:
+      homeserver:
     depends_on:
       - log
       - registry
@@ -144,6 +176,9 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "core"
+    profiles:
+      - harbor
+
   portal:
     image: goharbor/harbor-portal:v2.14.2
     container_name: harbor-portal
@@ -157,10 +192,12 @@ services:
       - NET_BIND_SERVICE
     volumes:
       - type: bind
-        source: ./common/config/portal/nginx.conf
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/portal/nginx.conf
         target: /etc/nginx/nginx.conf
+        bind:
+          create_host_path: true
     networks:
-      - harbor
+      - homeserver
     depends_on:
       - log
     logging:
@@ -168,12 +205,14 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "portal"
+    profiles:
+      - harbor
 
   jobservice:
     image: goharbor/harbor-jobservice:v2.14.2
     container_name: harbor-jobservice
     env_file:
-      - ./common/config/jobservice/env
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/jobservice/env
     restart: always
     cap_drop:
       - ALL
@@ -182,15 +221,19 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/job_logs:/var/log/jobs:z
+      - ${HARBOR_REGISTRY_STORAGE}/data/job_logs:/var/log/jobs:z
       - type: bind
-        source: ./common/config/jobservice/config.yml
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/jobservice/config.yml
         target: /etc/jobservice/config.yml
+        bind:
+          create_host_path: true
       - type: bind
-        source: ./common/config/shared/trust-certificates
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/shared/trust-certificates
         target: /harbor_cust_cert
+        bind:
+          create_host_path: true
     networks:
-      - harbor
+      - homeserver
     depends_on:
       - core
     logging:
@@ -198,6 +241,9 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "jobservice"
+    profiles:
+      - harbor
+
   redis:
     image: goharbor/redis-photon:v2.14.2
     container_name: redis
@@ -209,9 +255,9 @@ services:
       - SETGID
       - SETUID
     volumes:
-      - /data/redis:/var/lib/redis
+      - ${HARBOR_REGISTRY_STORAGE}/data/redis:/var/lib/redis
     networks:
-      harbor:
+      homeserver:
     depends_on:
       - log
     logging:
@@ -219,6 +265,9 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "redis"
+    profiles:
+      - harbor
+
   proxy:
     image: goharbor/nginx-photon:v2.14.2
     container_name: nginx
@@ -231,15 +280,16 @@ services:
       - SETUID
       - NET_BIND_SERVICE
     volumes:
-      - ./common/config/nginx:/etc/nginx:z
+      - ${HARBOR_REGISTRY_STORAGE}/common/config/nginx:/etc/nginx:z
       - type: bind
-        source: ./common/config/shared/trust-certificates
+        source: ${HARBOR_REGISTRY_STORAGE}/common/config/shared/trust-certificates
         target: /harbor_cust_cert
+        bind:
+          create_host_path: true
     networks:
-      - harbor
+      - homeserver
     ports:
-      - 80:8080
-      - 9090:9090
+      - 8081:8080
     depends_on:
       - registry
       - core
@@ -250,26 +300,5 @@ services:
       options:
         syslog-address: "tcp://localhost:1514"
         tag: "proxy"
-  exporter:
-    image: goharbor/harbor-exporter:v2.14.2
-    container_name: harbor-exporter
-    env_file:
-      - ./common/config/exporter/env
-    restart: always
-    networks:
+    profiles:
       - harbor
-    depends_on:
-      - core
-      - postgresql
-    volumes:
-      - type: bind
-        source: ./common/config/shared/trust-certificates
-        target: /harbor_cust_cert
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://localhost:1514"
-        tag: "exporter"
-networks:
-  harbor:
-    external: false

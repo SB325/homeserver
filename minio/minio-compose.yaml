@@ -17,7 +17,7 @@ services:
       - homeserver
     command: server --console-address ":${MINIO_CONSOLE_PORT}" ${MINIO_STORAGE_DIR}
     profiles:
-      - llm
+      - cloud
     container_name: minio
     
 
