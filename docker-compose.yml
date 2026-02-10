@@ -7,7 +7,6 @@ include:
   - neo4j/docker-compose.yml
   - telemetry/docker-compose.yml
   - invokeai/docker-compose.yml
-  - harbor/docker-compose.yml
   - jenkins/docker-compose.yml
 
 services:
