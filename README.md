@@ -6,14 +6,14 @@ This repository contains the deployment of several services that support data ma
 |----------|:-------------:|------:|
 | proxy |  NGINX Reverse Proxy | :heavy_check_mark: |
 | telemetry |    Observability   |   :heavy_check_mark: |
-| jenkins | CICD Pipelines | - [ ] |
+| jenkins | CICD Pipelines |     |
 | invokeai | AI Image Generator | :heavy_check_mark:   |
 |   kafka    |   Pub-Sub Data Logger    |   :heavy_check_mark:  |
 |   redis    |   In-Memory Cache    |   :heavy_check_mark:    |
-|   spark    |   Scaled Data Processor    |    - [ ]   |
+|   spark    |   Scaled Data Processor    |       |
 |   registry    |   local container registry    |   :heavy_check_mark:    |
 |   neo4j    |   Graph Database/Triplestore    |   :heavy_check_mark:    |
-|   minio    |   S3 Bucket Store    |   - [ ]    |
+|   minio    |   S3 Bucket Store    |      |
 |    milvus   |   Vector Database    |   :heavy_check_mark:    |
 |    ollama   |   Open Source LLM Framework   |   :heavy_check_mark:    |
 |    postgres   |   SQL Database  |  :heavy_check_mark:   |
