@@ -1,3 +1,0 @@
-kaggle
-kagglehub
-boto3
