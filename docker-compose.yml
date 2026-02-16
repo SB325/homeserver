@@ -8,6 +8,7 @@ include:
   - telemetry/docker-compose.yml
   - invokeai/docker-compose.yml
   - jenkins/docker-compose.yml
+  - registry/docker-compose.yml
 
 services:
   postgres:
@@ -126,6 +127,7 @@ services:
       - ./proxy/${MY_DNS_NAME}.crt:/etc/ssl/certs/${MY_DNS_NAME}.crt
       - ./proxy/${MY_DNS_NAME}.key:/etc/ssl/certs/${MY_DNS_NAME}.key
       - ./proxy/log:/var/log
+      - ./proxy/4AD16FBDD81BF98248E7D0D72D28CFC5.txt:/.well-known/pki-validation/4AD16FBDD81BF98248E7D0D72D28CFC5.txt
     ports:
       - "443:443"
       - "80:80"

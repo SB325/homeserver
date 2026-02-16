@@ -1,0 +1,56 @@
+services:
+  # https://github.com/Joxit/docker-registry-ui
+  registry-ui:
+    image: joxit/docker-registry-ui:main
+    restart: unless-stopped
+    ports:
+      - 8082:80
+    environment:
+      # - REGISTRY_URL=https://${MY_DNS_NAME}/registry/
+      - SINGLE_REGISTRY=true
+      - DOCKER_REGISTRY_UI_TITLE=Sheldon's Container Registry
+      - DELETE_IMAGES=true
+      - SHOW_CONTENT_DIGEST=true
+      - NGINX_PROXY_PASS_URL=http://registry:5000
+      - SHOW_CATALOG_NB_TAGS=true
+      - CATALOG_MIN_BRANCHES=1
+      - CATALOG_MAX_BRANCHES=1
+      - TAGLIST_PAGE_SIZE=100
+      - REGISTRY_SECURED=false
+      - CATALOG_ELEMENTS_LIMIT=1000
+    container_name: registry-ui
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - registry
+    network_mode: "host"
+    profiles:
+      - cicd
+
+  # https://medium.com/@haminhsang1903/private-docker-registry-with-https-and-a-nginx-reverse-proxy-using-docker-compose-6c1335c5e820
+  registry:
+    image: registry:2.8.2
+    restart: unless-stopped
+    environment:
+      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: '[https://${MY_DNS_NAME}]'
+      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: '[HEAD,GET,OPTIONS,DELETE]'
+      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials: '[false]'
+      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: '[Authorization,Accept,Cache-Control]'
+      # REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: '[Docker-Content-Digest]'
+      # REGISTRY_AUTH=htpasswd
+      # REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+      # REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+      # REGISTRY_STORAGE_DELETE_ENABLED: 'true'
+      # REGISTRY_HTTP_TLS_CERTIFICATE: /etc/nginx/certs/${MY_DNS_NAME}.crt
+      # REGISTRY_HTTP_TLS_KEY: /etc/nginx/certs/${MY_DNS_NAME}.key
+      REGISTRY_SSL: 'false'
+    ports:
+      - 5000:5000
+    volumes:
+      - ${CONTAINER_REGISTRY_STORAGE}/data:/var/lib/registry
+      # - ./certs:/etc/nginx/certs/
+    container_name: registry
+    network_mode: "host"
+    profiles:
+      - cicd

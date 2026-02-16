@@ -14,6 +14,14 @@ upstream jenkins {
     server jenkins:8080;
 }
 
+# upstream registry {
+#     server registry:5000;
+# }
+
+# upstream registry-ui {
+#     server registry-ui:80;
+# }
+
 # upstream neo4j {
 #     server neo4j:7474;
 # }
@@ -85,6 +93,29 @@ server {
         proxy_set_header Authorization "";
         auth_basic on;  
     }
+
+    # location /registry/ {
+    #     proxy_pass http://registry-ui;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    # }
+
+    # location /v2/ {
+    #     proxy_pass http://registry;
+    #     proxy_set_header Host $http_host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+
+    #     # These headers are required for Docker to trust the registry
+    #     # certificate and enable client-side certificate validation
+    #     proxy_ssl_verify on;
+    #     proxy_ssl_trusted_certificate /etc/nginx/certs/crunchy.dyndns.org.crt;
+    #     proxy_ssl_session_reuse off;
+    #     auth_basic on;  
+    # }
 
     # location /minio/ {
     #     proxy_pass http://minio/;
