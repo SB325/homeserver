@@ -13,7 +13,7 @@ This repository contains the deployment of several services that support data ma
 |   spark    |   Scaled Data Processor    |       |
 |   registry    |   local container registry    |   :heavy_check_mark:    |
 |   neo4j    |   Graph Database/Triplestore    |   :heavy_check_mark:    |
-|   minio    |   S3 Bucket Store    |      |
+|   minio    |   S3 Bucket Store    |          |
 |    milvus   |   Vector Database    |   :heavy_check_mark:    |
 |    ollama   |   Open Source LLM Framework   |   :heavy_check_mark:    |
 |    postgres   |   SQL Database  |  :heavy_check_mark:   |

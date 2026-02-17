@@ -15,4 +15,4 @@ proxy/log/
 **.crt
 **.key
 **.log
-**harbor.yml
+MCP_Client_Template/
