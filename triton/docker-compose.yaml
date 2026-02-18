@@ -1,0 +1,24 @@
+services:
+  triton_server:
+    image: nvcr.io/nvidia/tritonserver:26.01-vllm-python-py3 
+    runtime: nvidia 
+    volumes:
+      - ${TRITON_MODEL_STORAGE}/models:/models
+    ports:
+      - "8000:8000" # HTTP (8000)
+      - "8001:8001" # GRPC (8001)
+      - "8002:8002" # Prometheus metrics (8002)
+    command: ["tritonserver", "--model-repository=/models"]
+    shm_size: 1g # Recommended for performance
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      stack:
+        soft: 67108864
+        hard: 67108864
+    networks:
+     - homeserver
+    profiles:
+      - llm
+    container_name: triton
