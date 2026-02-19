@@ -3,6 +3,7 @@
 ollama/
 work/
 apps/
+!apps/client_templates
 .env
 apc_ups/
 **/.venv/
