@@ -15,3 +15,6 @@ hf download OpenMOSS-Team/MOSS-TTSD-v1.0 --cache-dir /mnt/bulkStorage/triton/mod
 hf download nvidia/nemotron-colembed-vl-4b-v2 --cache-dir /mnt/bulkStorage/triton/models
 # Sentence Similarity
 hf download sentence-transformers/all-MiniLM-L12-v2 --cache-dir /mnt/bulkStorage/triton/models
+# Speech to text
+hf download openai/whisper-base --cache-dir /mnt/bulkStorage/triton/models
+hf download openai/whisper-small --cache-dir /mnt/bulkStorage/triton/models

@@ -6,7 +6,7 @@ services:
     ports:
       - 8082:80
     environment:
-      # - REGISTRY_URL=https://${MY_DNS_NAME}/registry/
+      - REGISTRY_URL=https://${MY_DNS_NAME}/registry/
       - SINGLE_REGISTRY=true
       - DOCKER_REGISTRY_UI_TITLE=Sheldon's Container Registry
       - DELETE_IMAGES=true
@@ -20,10 +20,10 @@ services:
       - CATALOG_ELEMENTS_LIMIT=1000
     container_name: registry-ui
     volumes:
-      - ./certs:/etc/nginx/certs:ro
+      - ${TLS_CERT_DIR}:/etc/nginx/certs:ro
     depends_on:
       - registry
-    network_mode: "host"
+    networks: [ homeserver ]
     profiles:
       - cicd
 
@@ -33,8 +33,8 @@ services:
     restart: unless-stopped
     environment:
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
-      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: '[https://${MY_DNS_NAME}]'
-      # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: '[HEAD,GET,OPTIONS,DELETE]'
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: '[https://${MY_DNS_NAME}]'
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: '[HEAD,GET,OPTIONS,DELETE]'
       # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials: '[false]'
       # REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: '[Authorization,Accept,Cache-Control]'
       # REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: '[Docker-Content-Digest]'
@@ -42,15 +42,15 @@ services:
       # REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
       # REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
       # REGISTRY_STORAGE_DELETE_ENABLED: 'true'
-      # REGISTRY_HTTP_TLS_CERTIFICATE: /etc/nginx/certs/${MY_DNS_NAME}.crt
-      # REGISTRY_HTTP_TLS_KEY: /etc/nginx/certs/${MY_DNS_NAME}.key
+      REGISTRY_HTTP_TLS_CERTIFICATE: /etc/nginx/certs/cert.crt
+      REGISTRY_HTTP_TLS_KEY: /etc/nginx/certs/cert.key
       REGISTRY_SSL: 'false'
     ports:
       - 5000:5000
     volumes:
       - ${CONTAINER_REGISTRY_STORAGE}/data:/var/lib/registry
-      # - ./certs:/etc/nginx/certs/
+      - ${TLS_CERT_DIR}:/etc/nginx/certs/
     container_name: registry
-    network_mode: "host"
+    networks: [ homeserver ]
     profiles:
       - cicd

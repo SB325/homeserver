@@ -15,8 +15,7 @@ RUN apt-get -y install apache2-utils
 
 # COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.conf.template /etc/nginx/templates/nginx.conf.template
-COPY ${MY_DNS_NAME}.crt /etc/ssl/certs/${MY_DNS_NAME}.crt
-COPY ${MY_DNS_NAME}.key /etc/ssl/private/${MY_DNS_NAME}.key
+COPY ${TLS_CERT_FILE} /etc/ssl/certs/${TLS_CERT_FILE}
 
 COPY index_mrapp.html /usr/share/nginx/html/
 

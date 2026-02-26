@@ -5,9 +5,15 @@ services:
       - "8080:8080"
     volumes:
       - ${JENKINS_STORAGE}:/var/jenkins_home
+      - ./jenkins.yaml/var/jenkins_home/casc_configs/jenkins.yaml
     environment:
       - JENKINS_OPTS="--prefix=/jenkins" # Optional: for sub-path access
       - VIRTUAL_HOST=${MY_DNS_NAME}
+      # JCasC Admin Credentials
+      - JENKINS_ADMIN_ID=${JENKINS_ADMIN_ID}
+      - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
+      # Point Jenkins to the config file
+      - CASC_JENKINS_CONFIG="/var/jenkins_home/casc_configs/jenkins.yaml"
     networks:
       - homeserver
     container_name: jenkins
