@@ -18,3 +18,9 @@ hf download sentence-transformers/all-MiniLM-L12-v2 --cache-dir /mnt/bulkStorage
 # Speech to text
 hf download openai/whisper-base --cache-dir /mnt/bulkStorage/triton/models
 hf download openai/whisper-small --cache-dir /mnt/bulkStorage/triton/models
+# NSFW text model
+hf download TostAI/nsfw-text-detection-large --cache-dir /mnt/bulkStorage/triton/models
+# NSFW image model
+hf download Falconsai/nsfw_image_detection --cache-dir /mnt/bulkStorage/triton/models
+# Prompt Injection model
+hf download protectai/deberta-v3-base-prompt-injection --cache-dir /mnt/bulkStorage/triton/models
