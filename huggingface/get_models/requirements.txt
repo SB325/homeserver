@@ -1,0 +1,4 @@
+optimum==2.1.0
+transformers==4.57.3
+huggingface_hub==0.36.2
+accelerate==1.13.0

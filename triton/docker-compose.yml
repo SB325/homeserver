@@ -8,7 +8,7 @@ services:
       - "8000:8000" # HTTP (8000)
       - "8001:8001" # GRPC (8001)
       - "8002:8002" # Prometheus metrics (8002)
-    command: ["tritonserver", "--model-repository=/models"]
+    command: ["tritonserver", "--model-repository=/models", "--allow-model-control=true"]
     shm_size: 1g # Recommended for performance
     ulimits:
       memlock:

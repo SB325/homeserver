@@ -9,6 +9,7 @@ include:
   - invokeai/docker-compose.yml
   - jenkins/docker-compose.yml
   - registry/docker-compose.yml
+  - triton/docker-compose.yml
 
 services:
   postgres:
