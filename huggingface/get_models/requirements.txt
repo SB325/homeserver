@@ -1,4 +1,6 @@
-optimum==2.1.0
+onnxruntime-genai==0.12.2
+onnx-ir==0.2.0
 transformers==4.57.3
 huggingface_hub==0.36.2
 accelerate==1.13.0
+tensorrt==10.15.1.29

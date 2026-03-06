@@ -5,7 +5,7 @@ import os, sys
 import pdb
 
 if len(sys.argv) < 2:
-    print("Usage: python script.py <model_path>")
+    print("Usage: python safetensors_to_onnx.py <model_path>")
     sys.exit(1)
 
 # Configuration

@@ -1,8 +1,11 @@
-
 from huggingface_hub import snapshot_download
 
-model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
-# model_name = "LocoreMind/LocoOperator-4B"
+if len(sys.argv) < 2:
+    print("Usage: python download_model.py <model_name>")
+    sys.exit(1)
+
+model_name = sys.argv[1]
+
 snapshot_download(
     repo_id=model_name,
     local_dir=f"/mnt/bulkStorage/triton/models/{model_name}/1/",
