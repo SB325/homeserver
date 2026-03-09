@@ -1,14 +1,23 @@
 services:
   triton_server:
-    image: nvcr.io/nvidia/tritonserver:26.01-vllm-python-py3 
-    runtime: nvidia 
+    image: nvcr.io/nvidia/tritonserver:26.02-trtllm-python-py3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
     volumes:
       - ${TRITON_MODEL_STORAGE}/models:/models
     ports:
       - "8000:8000" # HTTP (8000)
       - "8001:8001" # GRPC (8001)
       - "8002:8002" # Prometheus metrics (8002)
-    command: ["tritonserver", "--model-repository=/models", "--allow-model-control=true"]
+    command: ["tritonserver", 
+          "--model-repository=/models/", 
+          "--disable-auto-complete-config", 
+          "--log-verbose=1"]
     shm_size: 1g # Recommended for performance
     ulimits:
       memlock:

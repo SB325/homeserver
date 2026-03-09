@@ -8,6 +8,8 @@ This repository contains the deployment of several services that support data ma
 | telemetry |    Observability   |   :heavy_check_mark: |
 | jenkins | CICD Pipelines |     |
 | invokeai | AI Image Generator | :heavy_check_mark:   |
+|    ollama   |   Open Source LLM Framework   |   :heavy_check_mark:    |
+|    triton   |   Triton Inference Server   |   :heavy_check_mark:    |
 |   kafka    |   Pub-Sub Data Logger    |   :heavy_check_mark:  |
 |   redis    |   In-Memory Cache    |   :heavy_check_mark:    |
 |   spark    |   Scaled Data Processor    |       |
@@ -15,7 +17,6 @@ This repository contains the deployment of several services that support data ma
 |   neo4j    |   Graph Database/Triplestore    |   :heavy_check_mark:    |
 |   minio    |   S3 Bucket Store    |          |
 |    milvus   |   Vector Database    |   :heavy_check_mark:    |
-|    ollama   |   Open Source LLM Framework   |   :heavy_check_mark:    |
 |    postgres   |   SQL Database  |  :heavy_check_mark:   |
 |    pgadmin   |   Postgres Administration GUI   |   :heavy_check_mark:  |
 
