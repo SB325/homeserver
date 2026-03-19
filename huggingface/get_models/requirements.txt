@@ -1,1 +1,4 @@
-huggingface_hub==0.36.2
+torch
+transformers
+optimum[onnxruntime-gpu, exporters]
+accelerate

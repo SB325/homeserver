@@ -85,7 +85,6 @@ for MODEL in ${MODELS_LIST[@]}; do
     fi
     
     # remove tensorrt-llm container
-    stop docker container
     docker stop tensorrt-llm
     docker rm tensorrt-llm
 done
