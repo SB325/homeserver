@@ -21,4 +21,4 @@ To quantize, convert .safetensors to onnx (safetensors_to_onnx.sh)
 TO create TensorRT engine, convert .safetensors to .plan (safetensors_to_plan.py) 
 
 > [! WARNING]
-> Configuring the Triton inference engine to read the .plan file properly has not been successfully demonstrated.
+> Configuring .plan with Triton Inference Server has not been successfully demonstrated.
