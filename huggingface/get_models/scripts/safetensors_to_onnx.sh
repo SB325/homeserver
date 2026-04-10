@@ -1,9 +1,21 @@
 #!/bin/bash
 
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 ./safetensors_to_onnx.py <model_repo_root>"
+    exit 1
+fi
+
+# Assign the argument to a readable variable
+REPO_ROOT=$1
+
+echo "Starting vLLM with model: $MODEL_NAME"
+
 # 1. Your list of models
 MODELS_LIST=(
-    "Qwen/Qwen3-8B-AWQ"                                       # "Text Generation"
-    # "Qwen/Qwen3-VL-8B-Instruct"                         # "Image-Text to Text"
+    # "Qwen/Qwen3-4B-Instruct-2507-FP8"                               # "Text Generation"
+    # Qwen/Qwen3-4B-AWQ                                   # "Text Generation"
+    # "Qwen/Qwen3.5-4B"                                   # "Image-Text to Text"
+    Qwen/Qwen2.5-VL-3B-Instruct                            # "Image-Text to Text - Non thinking"
     # "stabilityai/stable-diffusion-xl-refiner-1.0"       # "Image to Image / Text to Image"
     # "Wan-AI/Wan2.2-TI2V-5B"                             # "Text to Video"
     # "facebook/mms-tts-eng"                              # "Text to Speech"
@@ -17,7 +29,7 @@ MODELS_LIST=(
 )
 
 # 2. Define where the repository should be created
-REPO_ROOT="/mnt/bulkStorage/llm/models"
+# REPO_ROOT="/mnt/bulkStorage/llm/models"
 
 # 3. Setup separators (comma and newline)
 OLD_IFS=$IFS
