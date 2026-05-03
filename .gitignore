@@ -16,3 +16,4 @@ proxy/log/
 **.key
 **.log
 MCP_Client_Template/
+telemetry/*-data

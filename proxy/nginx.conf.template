@@ -2,17 +2,17 @@
 #     server minio:9001;
 # }
 
-upstream telemetry {
-    server telemetry:3000;
+upstream grafana {
+    server grafana:3000;
 }
 
 upstream pgadmin {
     server pgadmin:80;
 }
 
-upstream jenkins {
-    server jenkins:8080;
-}
+# upstream jenkins {
+#     server jenkins:8080;
+# }
 
 upstream registry {
     server registry:5000;
@@ -80,7 +80,7 @@ server {
     }
 
     location /grafana/ {
-        proxy_pass http://telemetry;
+        proxy_pass http://grafana;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -93,19 +93,19 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
         proxy_set_header Host $host;
-        proxy_pass http://telemetry;
+        proxy_pass http://grafana;
     }
 
-    location /jenkins/ {
-        proxy_pass http://jenkins;
-        proxy_set_header X-Script-Name /jenkins;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Authorization "";
-        auth_basic on;  
-    }
+    # location /jenkins/ {
+    #     proxy_pass http://jenkins;
+    #     proxy_set_header X-Script-Name /jenkins;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #     proxy_set_header X-Forwarded-Proto $scheme;
+    #     proxy_set_header Authorization "";
+    #     auth_basic on;  
+    # }
 
     location /registry/ {
         proxy_pass http://registry-ui;
@@ -217,13 +217,6 @@ server {
     #     proxy_set_header X-Real-IP $remote_addr;
     #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     #     proxy_set_header X-Forwarded-Proto $scheme;
-    #     auth_basic on;  
-    # }
-
-    # location /mrapp/ {
-    #     root   /usr/share/nginx/html;
-    #     index  index_mrapp.html;
-    #     try_files $uri $uri/ /index_mrapp.html;
     #     auth_basic on;  
     # }
 

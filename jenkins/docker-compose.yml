@@ -5,7 +5,7 @@ services:
       - "8080:8080"
     volumes:
       - ${JENKINS_STORAGE}:/var/jenkins_home
-      - ./jenkins.yaml/var/jenkins_home/casc_configs/jenkins.yaml
+      - ./jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml
     environment:
       - JENKINS_OPTS="--prefix=/jenkins" # Optional: for sub-path access
       - VIRTUAL_HOST=${MY_DNS_NAME}

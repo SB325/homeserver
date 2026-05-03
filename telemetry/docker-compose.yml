@@ -1,53 +1,123 @@
-services:  
-  # Loki, Grafana, Tempo, and Mimir/Prometheus, plus OpenTelemetry and Pyroscope Bundle Image
-  telemetry:
-    image: grafana/otel-lgtm:latest
-    # command: ["--config=/otel-lgtm/otelcol-config.yaml"]
+services:
+  # OpenTelemetry Collector - Central telemetry ingestion and routing
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.151.0
+    container_name: otelcol
+    command: ["--config=/etc/otelcol-contrib/config.yaml", "--feature-gates=+service.profilesSupport"]
+    volumes:
+      - ./otelcol-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "13133:13133" # Health check endpoint
+    environment:
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}
+      - OTEL_METRIC_EXPORT_TIMEOUT=${OTEL_METRIC_EXPORT_TIMEOUT}
+      - OTEL_LOG_LEVEL=${OTEL_LOG_LEVEL}
+    networks:
+      - homeserver
+    profiles:
+      - telemetry
+    depends_on:
+      - loki
+      - tempo
+      - prometheus
+      - pyroscope
+    restart: unless-stopped
+
+  # Grafana - Unified observability dashboard
+  grafana:
+    image: grafana/grafana:13.0.1
+    container_name: grafana
     environment:
       - GF_SERVER_ROOT_URL=https://www.${MY_DNS_NAME}/grafana/
       - GF_SERVER_DOMAIN=${MY_DNS_NAME}
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ORG_ROLE=admin
-      # - GF_AUTH_DISABLE_LOGIN_FORM=true
-      # Optional: Enable detailed logging for components (uncomment as needed)
-      - ENABLE_LOGS_GRAFANA=false
-      - ENABLE_LOGS_LOKI=false
-      - ENABLE_LOGS_PROMETHEUS=false
-      - ENABLE_LOGS_TEMPO=false
-      - ENABLE_LOGS_PYROSCOPE=false
-      - ENABLE_LOGS_OTELCOL=true
-      # - ENABLE_LOGS_ALL=true
-      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}
-      - OTEL_METRIC_EXPORT_TIMEOUT=${OTEL_METRIC_EXPORT_TIMEOUT}
-      - OTEL_LOG_LEVEL=${OTEL_LOG_LEVEL}
-      - OTEL_TRACES_EXPORTER=oltp
+      - GF_INSTALL_PLUGINS=grafana-lokiexplore-app,grafana-pyroscope-datasource
     volumes:
-      - ./otelcol-config.yaml:/otel-lgtm/otelcol-config.yaml  # Mount your configuration
       - ./grafana.ini:/etc/grafana/grafana.ini
-      # Optional: Persist data across container restarts (adjust local paths as needed)
-      - ./loki-data:/loki
-      - ./prometheus-data:/prometheus
-      - ./tempo-data:/tempo
-      - ./pyroscope-data:/pyroscope
-      - ${GRAFANA_STORAGE}:/data/grafana
-    # healthcheck:
-    #   test: ["CMD", "/opt/health-check.sh"]
-    #   interval: 1m
-    #   timeout: 10s
-    #   retries: 10
-    #   start_period: 1m
-    #   start_interval: 10s
+      - ./provisioning:/etc/grafana/provisioning
+      - ${GRAFANA_STORAGE}:/var/lib/grafana
     ports:
-      - "3000:3000" # Grafana port
-      - "4317:4317" # OTLP gRPC receiver
-      - "4318:4318" # OTLP HTTP receiver
-      # Prometheus port (if needed for direct scraping)
-      # - "9090:9090"
-      # Loki port (for Promtail or direct ingestion)
-      # - "3100:3100"
+      - "3000:3000"
     networks:
-     - homeserver
+      - homeserver
     profiles:
-      - main
-    container_name: telemetry
+      - telemetry
+    restart: unless-stopped
+
+  # Loki - Log aggregation
+  loki:
+    image: grafana/loki:3.7.1
+    container_name: loki
+    command:
+      - '-config.file=/etc/loki/local-config.yaml'
+      - '-target=all'
+    ports:
+      - "3100:3100"   # HTTP API
+      - "9095:9095"   # gRPC
+    volumes:
+      - ./loki-data:/loki
+    networks:
+      - homeserver
+    profiles:
+      - telemetry
+    restart: unless-stopped
+
+  # Tempo - Distributed tracing
+  tempo:
+    image: grafana/tempo:2.10.5
+    container_name: tempo
+    command:
+      - '-config.file=/etc/tempo/tempo.yaml'
+    environment:
+      - TEMPO_SEARCH_ENABLED=true
+    ports:
+      - "3200:3200"   # HTTP API
+      - "4319:4317"   # OTLP gRPC (mapped to avoid conflict with otelcol)
+    volumes:
+      - ./tempo.yaml:/etc/tempo/tempo.yaml
+      - ./tempo-data:/tmp/tempo
+    networks:
+      - homeserver
+    profiles:
+      - telemetry
+    restart: unless-stopped
+
+  # Prometheus - Metrics collection and storage
+  prometheus:
+    image: prom/prometheus:v3.2.0
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=otlp-write-receiver'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-data:/prometheus
+    networks:
+      - homeserver
+    profiles:
+      - telemetry
+    restart: unless-stopped
+
+  # Pyroscope - Continuous profiling
+  pyroscope:
+    image: grafana/pyroscope:2.0.1
+    container_name: pyroscope
+    command:
+      - 'server'
+    ports:
+      - "4040:4040"
+    volumes:
+      - ./pyroscope-data:/var/lib/pyroscope
+    networks:
+      - homeserver
+    profiles:
+      - telemetry
+    restart: unless-stopped

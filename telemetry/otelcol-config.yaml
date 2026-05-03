@@ -7,7 +7,7 @@ receivers:
         endpoint: 0.0.0.0:4318 # Default HTTP port
         # cors:
         #   allowed_origins:
-        #     - https://crunchy.dydndns.org/*
+        #     - https://sheldonbish.com/*
   hostmetrics:
     collection_interval: 10s # Or your desired interval
     scrapers:
@@ -36,19 +36,19 @@ extensions:
 
 exporters:
   otlphttp/metrics:
-    endpoint: http://127.0.0.1:9090/api/v1/otlp
+    endpoint: http://prometheus:9090/api/v1/otlp
     tls:
       insecure: true
   otlphttp/traces:
-    endpoint: http://127.0.0.1:4418
+    endpoint: http://tempo:3200
     tls:
       insecure: true
   otlphttp/logs:
-    endpoint: http://127.0.0.1:3100/otlp
+    endpoint: http://loki:3100/otlp
     tls:
       insecure: true
   otlp/profiles:
-    endpoint: http://127.0.0.1:4040
+    endpoint: http://pyroscope:4040
     tls:
       insecure: true
   debug/metrics:
@@ -58,7 +58,7 @@ exporters:
   debug/logs:
     verbosity: detailed
   prometheusremotewrite:
-    endpoint: http://mimir:9009/api/v1/push
+    endpoint: http://prometheus:9090/api/v1/write
     # Optional: configure resource attribute promotion to labels
 
 service:
@@ -67,18 +67,17 @@ service:
       level: "debug"
   pipelines:
     metrics:
-      receivers: [otlp,hostmetrics,prometheus/collector]
+      receivers: [otlp, hostmetrics, prometheus/collector]
       processors: [batch]
-      exporters: [prometheusremotewrite,otlphttp/metrics,debug/metrics] #,debug/console]
+      exporters: [prometheusremotewrite, otlphttp/metrics, debug/metrics]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/traces,debug/traces] #,debug/console]
+      exporters: [otlphttp/traces, debug/traces]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlphttp/logs,debug/logs] #,debug/console]
+      exporters: [otlphttp/logs, debug/logs]
     profiles:
       receivers: [otlp]
       exporters: [otlp/profiles]
-##

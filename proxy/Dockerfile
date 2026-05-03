@@ -17,6 +17,4 @@ RUN apt-get -y install apache2-utils
 COPY nginx.conf.template /etc/nginx/templates/nginx.conf.template
 COPY ${TLS_CERT_FILE} /etc/ssl/certs/${TLS_CERT_FILE}
 
-COPY index_mrapp.html /usr/share/nginx/html/
-
 RUN htpasswd -b -c /etc/nginx/.htpasswd ${PROXY_USER} ${PROXY_PASSWORD}

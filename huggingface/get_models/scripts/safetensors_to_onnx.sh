@@ -15,7 +15,7 @@ MODELS_LIST=(
     # "Qwen/Qwen3-4B-Instruct-2507-FP8"                               # "Text Generation"
     # Qwen/Qwen3-4B-AWQ                                   # "Text Generation"
     # "Qwen/Qwen3.5-4B"                                   # "Image-Text to Text"
-    Qwen/Qwen2.5-VL-3B-Instruct                            # "Image-Text to Text - Non thinking"
+    # Qwen/Qwen2.5-VL-3B-Instruct                         # "Image-Text to Text - Non thinking"
     # "stabilityai/stable-diffusion-xl-refiner-1.0"       # "Image to Image / Text to Image"
     # "Wan-AI/Wan2.2-TI2V-5B"                             # "Text to Video"
     # "facebook/mms-tts-eng"                              # "Text to Speech"
@@ -26,6 +26,8 @@ MODELS_LIST=(
     # "TostAI/nsfw-text-detection-large"                  # "NSFW text model"
     # "Falconsai/nsfw_image_detection"                    # "NSFW image model"
     # "protectai/deberta-v3-base-prompt-injection"        # "Prompt Injection classifier"
+    # fastino/gliner2-large-v1                            # Gliner Structured Extraction
+    spacy/en_core_web_sm                                # spacy
 )
 
 # 2. Define where the repository should be created
