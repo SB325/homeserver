@@ -20,4 +20,4 @@ This repository contains the deployment of several services that support data ma
 |    postgres   |   SQL Database  |  :heavy_check_mark:   |
 |    pgadmin   |   Postgres Administration GUI   |   :heavy_check_mark:  |
 
-When the intent is to run applications like `SEC EDGAR ETL` (a.k.a. Market Reader), you'll want to run postgres, kafka, redis, and optionally, pgadmin, telemetry, and proxy.
+When the intent is to run applications like `SEC EDGAR ETL` (a.k.a. Market Reader), you'll want to run postgres, kafka, redis, pgadmin, telemetry, and proxy.
