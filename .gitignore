@@ -17,3 +17,4 @@ proxy/log/
 **.log
 MCP_Client_Template/
 telemetry/*-data
+apache_jena/LodView/.git

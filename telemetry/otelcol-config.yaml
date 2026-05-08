@@ -5,9 +5,6 @@ receivers:
         endpoint: 0.0.0.0:4317 # Default gRPC port
       http:
         endpoint: 0.0.0.0:4318 # Default HTTP port
-        # cors:
-        #   allowed_origins:
-        #     - https://sheldonbish.com/*
   hostmetrics:
     collection_interval: 10s # Or your desired interval
     scrapers:

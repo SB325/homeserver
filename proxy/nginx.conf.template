@@ -22,6 +22,10 @@ upstream registry-ui {
     server registry-ui:80;
 }
 
+upstream virtuoso {
+    server virtuoso:8890;
+}
+
 # upstream neo4j {
 #     server neo4j:7474;
 # }
@@ -121,6 +125,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        client_max_body_size 0;
 
         # These headers are required for Docker to trust the registry
         # certificate and enable client-side certificate validation
@@ -139,6 +144,15 @@ server {
     #     proxy_set_header X-Forwarded-Proto $scheme;
     #     auth_basic on;  
     # }
+
+    # 2. Protected Admin UI (Conductor)
+    location /virtuoso {
+        proxy_pass http://virtuoso/conductor;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_read_timeout 300;
+        auth_basic on;  
+    }
 
     # location /neo4j/ {
     #     proxy_pass http://neo4j/;

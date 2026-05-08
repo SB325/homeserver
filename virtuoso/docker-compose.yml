@@ -1,0 +1,41 @@
+services:
+  virtuoso:
+    image: openlink/virtuoso-opensource-7:latest
+    container_name: virtuoso
+    ports:
+      - "8890:8890"  # HTTP Interface (Conductor & SPARQL Endpoint) 
+    volumes:
+      - ${VIRTUOSO_PERSISTENT_STORAGE}/virtuoso_data:/database
+    environment:
+      - DBA_PASSWORD=${VIRTUOSO_DB_PASS}
+      - VIRT_Parameters_NumberOfBuffers=170000 # ~2GB RAM (adjust as needed)
+      - VIRT_Parameters_MaxDirtyBuffers=130000
+      - VIRT_Parameters_ProxyClientHeader=X-Forwarded-For
+      - VIRT_Parameters_DefaultHost=${MY_DNS_NAME}
+    networks:
+      - homeserver
+    profiles:
+      - graph
+    restart: always
+
+  graphui:
+    build:
+      context: LodView
+      dockerfile: Dockerfile
+    image: lodview-local:latest
+    container_name: graphui
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount your custom configuration file to the container
+      # Adjust the source path to where your 'conf.ttl' is located
+      - .LodView/src/main/webapp/WEB-INF/conf.ttl:/usr/local/tomcat/webapps/ROOT/WEB-INF/conf.ttl:z
+    environment:
+      - JAVA_OPTS=-Xmx1024m
+    networks:
+      - homeserver
+    profiles:
+      - graph
+    depends_on:
+      - virtuoso
+    restart: unless-stopped

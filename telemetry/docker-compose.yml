@@ -59,7 +59,7 @@ services:
       - "3100:3100"   # HTTP API
       - "9095:9095"   # gRPC
     volumes:
-      - ./loki-data:/loki
+      - ${LOKI_STORAGE}:/loki
     networks:
       - homeserver
     profiles:
@@ -79,7 +79,7 @@ services:
       - "4319:4317"   # OTLP gRPC (mapped to avoid conflict with otelcol)
     volumes:
       - ./tempo.yaml:/etc/tempo/tempo.yaml
-      - ./tempo-data:/tmp/tempo
+      - ${TEMPO_STORAGE}:/tmp/tempo
     networks:
       - homeserver
     profiles:
@@ -99,7 +99,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus-data:/prometheus
+      - ${PROMETHEUS_STORAGE}:/prometheus
     networks:
       - homeserver
     profiles:
@@ -115,7 +115,7 @@ services:
     ports:
       - "4040:4040"
     volumes:
-      - ./pyroscope-data:/var/lib/pyroscope
+      - ${PYROSCOPE_STORAGE}:/var/lib/pyroscope
     networks:
       - homeserver
     profiles:

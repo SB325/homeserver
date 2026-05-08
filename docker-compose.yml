@@ -11,6 +11,7 @@ include:
   - jenkins/docker-compose.yml
   - registry/docker-compose.yml
   - triton/docker-compose.yml
+  - virtuoso/docker-compose.yml
 
 services:
   postgres:
@@ -141,8 +142,13 @@ services:
      - homeserver
     profiles:
       - main
+      - telemetry
+      - cicd
+      - graph
     depends_on:
       - pgadmin
+      - virtuoso
+      - registry-ui
       # - milvusui
       # - open-webui
       # - neo4j
