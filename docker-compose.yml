@@ -12,7 +12,8 @@ include:
   - registry/docker-compose.yml
   - triton/docker-compose.yml
   - virtuoso/docker-compose.yml
-
+  - mcp/docker-compose.yml
+  
 services:
   postgres:
     image: postgres:latest

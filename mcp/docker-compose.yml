@@ -1,0 +1,101 @@
+services:
+  agentgateway:
+    build: 
+      context: ./agentgateway/
+      dockerfile: Dockerfile
+    image: agentgateway:latest
+    restart: unless-stopped
+    environment:
+      VERSION: ${VERSION:-}
+      GIT_REVISION: ${GIT_REVISION:-}
+      CARGO_NO_DEFAULT_FEATURES: ${CARGO_NO_DEFAULT_FEATURES:-}
+      CARGO_FEATURES: ${CARGO_FEATURES:-}
+    ports:
+      - 8086:8080
+    profiles:
+      - agenttools
+    networks:
+     - homeserver
+    container_name: agentgateway
+
+  bravesearch:
+    build: 
+      context: ./servers/brave-search/
+    image: bravesearch:latest
+    restart: unless-stopped
+    environment:
+      BRAVE_API_KEY: ${BRAVE_SEARCH_KEY}
+      BRAVE_MCP_TRANSPORT: http
+      BRAVE_MCP_LOG_LEVEL: info
+      # BRAVE_MCP_ENABLED_TOOLS:  # When used, specifies a space-separated whitelist for supported tools
+      # BRAVE_MCP_DISABLED_TOOLS:  # When used, specifies a space-separated blacklist for supported tools
+    ports:
+      - 8005:8000
+    profiles:
+      - agenttools
+    networks:
+     - homeserver
+    container_name: bravesearch-mcp
+
+  firecrawl:
+    build: 
+      context: ./servers/firecrawl
+    image: firecrawl:latest
+    restart: unless-stopped
+    environment:
+      FIRECRAWL_API_KEY: ${FIRECRAWL_KEY}
+      HTTP_STREAMABLE_SERVER: true
+      # FIRECRAWL_RETRY_MAX_ATTEMPTS: 5
+      # FIRECRAWL_RETRY_INITIAL_DELAY: 2000
+      # FIRECRAWL_RETRY_MAX_DELAY: 20000
+      # FIRECRAWL_RETRY_BACKOFF_FACTOR: 3
+      # FIRECRAWL_CREDIT_WARNING_THRESHOLD: 2000
+      # FIRECRAWL_CREDIT_CRITICAL_THRESHOLD: 500
+    ports:
+      - 3001:3000
+    profiles:
+      - agenttools
+    networks:
+     - homeserver
+    container_name: firecrawl-mcp
+
+  postgres-mcp:
+    build: 
+      context: ./servers/postgres
+    image: postgres-mcp:latest
+    restart: unless-stopped
+    # environment:
+    profiles:
+      - agenttools
+    networks:
+     - homeserver
+    container_name: postgres-mcp
+
+  # sequentialthinking:
+  #   build: 
+  #     context: ./servers/sequentialthinking
+  #   image: sequentialthinking:latest
+  #   restart: unless-stopped
+  #   profiles:
+  #     - agenttools
+  #   networks:
+  #    - homeserver
+  #   container_name: sequentialthinking-mcp
+
+  time-mcp:
+    build: 
+      context: ./servers/time
+      args: 
+        - LOCAL_TZ=America/New_York
+    image: time-mcp:latest
+    restart: unless-stopped
+    ports:
+      - 8007:8000
+    environment:
+      TZ: America/New_York
+      LOCAL_TIMEZONE: America/New_York
+    profiles:
+      - agenttools
+    networks:
+     - homeserver
+    container_name: mcp-time  

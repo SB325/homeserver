@@ -7,12 +7,15 @@ from zoneinfo import ZoneInfo
 from tzlocal import get_localzone_name  # ← returns "Europe/Paris", etc.
 
 from mcp.server import Server
-from mcp.server.stdio import stdio_server
+from mcp.server.sse import SseServerTransport
+from mcp.server.lowlevel import Server
+import asyncio
+from aiohttp import web
+
 from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource, ErrorData, INVALID_PARAMS
 from mcp.shared.exceptions import McpError
 
 from pydantic import BaseModel
-
 
 class TimeTools(str, Enum):
     GET_CURRENT_TIME = "get_current_time"
@@ -203,6 +206,38 @@ async def serve(local_timezone: str | None = None) -> None:
         except Exception as e:
             raise ValueError(f"Error processing mcp-server-time query: {str(e)}")
 
-    options = server.create_initialization_options()
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(read_stream, write_stream, options)
+    transport = SseServerTransport("/messages")
+
+    async def handle_sse(request: web.Request) -> web.StreamResponse:
+        async with transport.connect_sse(
+            request.scope, request._receive, request._send
+        ) as (read_stream, write_stream):
+            await server.run(
+                read_stream,
+                write_stream,
+                server.create_initialization_options()
+            )
+        return web.Response()
+
+    async def handle_post(request: web.Request) -> web.Response:
+        await transport.handle_post_message(
+            request.scope, request._receive, request._send
+        )
+        return web.Response()
+
+    app = web.Application()
+    app.router.add_get('/sse', handle_sse)
+    app.router.add_post('/messages', handle_post)  # Must match the prefix given to transport
+    
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8000)
+    await site.start()
+
+    print("MCP Time Server running via SSE on http://0.0.0")
+    try:
+        await asyncio.Event().wait()  
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        pass
+    finally:
+        await runner.cleanup()

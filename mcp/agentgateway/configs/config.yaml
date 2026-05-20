@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+binds:
+- port: 3000
+  listeners:
+  - routes:
+    - policies:
+        cors:
+          allowOrigins:
+          - "*"
+          allowHeaders:
+          - mcp-protocol-version
+          - content-type
+          - cache-control
+          exposeHeaders:
+          - "Mcp-Session-Id"
+      backends:
+      - bravesearch:
+          targets:
+          - name: bravesearch-mcp
+            sse:
+              cmd: npx
+              args: ["@modelcontextprotocol/bravesearch-mcp"]
+      - firecrawl:
+          targets:
+          - name: firecrawl-mcp
+            sse:
+              cmd: npx
+              args: ["@modelcontextprotocol/firecrawl-mcp"]
+      - postgres:
+          targets:
+          - name: postgres-mcp
+            sse:
+              cmd: npx
+              args: ["@modelcontextprotocol/postgres-mcp"]
+      - sequentialthinking:
+          targets:
+          - name: sequentialthinking-mcp
+            sse:
+              cmd: npx
+              args: ["@modelcontextprotocol/sequentialthinking-mcp"]
+      - time:
+          targets:
+          - name: time-mcp
+            sse:
+              cmd: npx
+              args: ["@modelcontextprotocol/time-mcp"]
