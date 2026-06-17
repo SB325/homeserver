@@ -1,6 +1,6 @@
 services:
   invokeai:
-    image: ghcr.io/invoke-ai/invokeai
+    image: ghcr.io/invoke-ai/invokeai:v6.11.0-cuda
     restart: unless-stopped
     volumes:
         - /mnt/bulkStorage/invokeai:/invokeai
@@ -17,7 +17,7 @@ services:
               device_ids: ["0"]
               capabilities: [gpu]
     networks:
-     - homeserver
+      - homeserver
     profiles:
       - ai
     container_name: invokeai

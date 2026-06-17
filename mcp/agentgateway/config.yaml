@@ -1,8 +1,18 @@
+config:
+  tracing:
+    otlpEndpoint: http://telemetry:4317
+    randomSampling: true
 binds:
-  - port: 3000
-policies:
-  cors:
-    allowOrigins:
-      - "*"
-    allowHeaders:
-      - "*"
+- port: 15000
+  listeners:
+  - routes:
+    - policies:
+        localRateLimit:
+          - maxTokens: 10
+            tokensPerFill: 1
+            fillInterval: 60s
+        cors:
+          allowOrigins:
+            - "*"
+          allowHeaders:
+            - "*"

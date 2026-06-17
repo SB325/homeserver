@@ -1,0 +1,258 @@
+[
+    {
+        "name": "Advanced Air Care Heating and Cooling",
+        "headquarters": "Tallahassee, Florida, United States",
+        "estimated-revenue": "<$5 Million",
+        "estimated-headcount": "11-50",
+        "url": "https://www.airconditioningtallahassee.com/",
+        "details": "Advanced Air Care Heating and Cooling uses a WordPress-based website focused on traditional manual scheduling through a contact form rather than integrated automated booking tools. The site operates with a low-to-mid-tech infrastructure, relying on phone-in services and a basic, static testimonials page for reputation management. For more details, visit airconditioningtallahassee.com"
+    },
+    {
+        "name": "Air America Air Conditioning Heating and Electrical",
+        "headquarters": "Coral Springs, Florida, United States",
+        "estimated-revenue": "$33 Million",
+        "estimated-headcount": "11-50",
+        "leads": [
+            {
+                "name": "Albert Salvador",
+                "role": "Automation Manager at Verano",
+                "Contacted": {
+                  "status": true,
+                  "method": "LinkedIN",
+                  "date": "06/11/2026",
+                  "datefmt": "MM/DD/YYYY"
+                }
+            },
+            {
+                "name": "Scott Dinino",
+                "role": "General manager at Snyder Air Conditioning",
+                "Contacted": {
+                  "status": true,
+                  "method": "LinkedIN",
+                  "date": "06/11/2026",
+                  "datefmt": "MM/DD/YYYY"
+                }
+            }
+        ],
+        "url": "https://airamericaac.com/",
+        "details:": "Air America Air Conditioning Heating and Electrical utilizes a WordPress-based site with Google Tag Manager to drive a marketing-focused, custom-form approach for lead capture. The site prioritizes direct submission forms with SMS and email disclosures over live scheduling widgets or automated chatbots. View the site at Air America AC."
+    },
+    {
+        "name": "Air Docs Heating & Cooling",
+        "headquarters": "Vero Beach, Florida, United States",
+        "estimated-revenue": "$6.7 Million",
+        "estimated-headcount": "11-50",
+        "url": "https://airdocsac.com/",
+        "details": "Air Docs Heating & Cooling utilizes a specialized, conversion-focused WordPress site built by Rival Digital LLC to drive local HVAC lead generation. The platform prioritizes customer data intake through a custom multi-step "Book Online" form rather than live scheduling, supplemented by embedded reviews and traffic tracking. Read the full site analysis at Air Docs Heating & Cooling."
+    },
+    {
+        "name": "Air Quality Control Environmental Inc.",
+        "headquarters": "Coral Springs, Florida, United States",
+        "estimated-revenue": "<$5 Million",
+        "estimated-headcount": "11-50",
+        "leads": [
+            {
+                "name": "Allan Dexter",
+                "role": "Owner"
+            },
+            {
+                "name": "Melvin Roman",
+                "role": "General manager"
+            },
+            {
+                "name": "Mike Dexter",
+                "role": "Owner"
+            },
+            {
+                "name": "Kelly Dexter",
+                "role": "Owner/Operator"
+            },
+            {
+                "name": "Leonardo Baloa",
+                "role": "New Business Manager"
+            },
+            {
+                "name": "Anna Dexter",
+                "role": "Office Manager"
+            },
+            {
+                "name": "Jaqueline Casas",
+                "role": "Accounting Bookkeeper"
+            }
+        ],
+        "url": "https://www.air-duct-cleaning-florida.com/",
+        "details": "Air Quality Control Environmental Inc. uses a WordPress-based website focused on lead generation through manual contact forms rather than automated booking or live chat widgets. The tech stack consists of standard CMS plugins and basic tracking, prioritizing direct phone and email communication. Visit the website directly at air-duct-cleaning-florida.com."
+    },
+    [
+  {
+    "name": "Gator Air Conditioning",
+    "headquarters": "Gainesville, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "leads": [
+      {
+        "name": "Bill Parmann",
+        "role": "Production Manager"
+      }
+    ],
+    "url": "https://gatoracrepair.com/",
+    "details": "Gator Air & Energy (gatoracrepair.com) operates on a WordPress CMS, utilizing a traditional, low-tech, informational brochure format. The site lacks automated, third-party booking or review tools, relying instead on manual contact forms and a static testimonials page for customer engagement. Analyze the site's full technology profile at Gator Air & Energy."
+  },
+  {
+    "name": "Innovair Corporation",
+    "headquarters": "Miami, Florida, United States",
+    "estimated-revenue": "$9.4 Million",
+    "estimated-headcount": "11-50",
+    "leads": [
+      {
+        "name": "Julio Gomez",
+        "role": "CEO"
+      },
+      {
+        "name": "Anna Castro",
+        "role": "Operation Manager"
+      }
+    ],
+    "url": "https://innovair.com/",
+    "details": "Innovair operates as an international HVAC equipment manufacturer, utilizing a B2B product catalog strategy focused on technical documentation, distributor support, and industrial certifications. The website lacks consumer-facing scheduling widgets or live chat, prioritizing product showcasing and contractor-specific information. For more details, visit Innovair."
+  },
+  {
+    "name": "JAX HVAC",
+    "headquarters": "Ponte Vedra Beach, Florida, United States",
+    "estimated-revenue": "$25 Million - $50 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.jax-hvac.com/",
+    "details": "JAX Refrigeration (jax-hvac.com) utilizes an enterprise-level B2B infrastructure focused on industrial mechanical engineering rather than consumer-facing booking tools. Backed by FirstCall Mechanical Group, the site prioritizes a professional portfolio, corporate contact channels, and community initiatives. Detailed information on the company's backing can be found in this Business Wire article."
+  },
+  {
+    "name": "Kimre Inc",
+    "headquarters": "Homestead, Florida, United States",
+    "estimated-revenue": "$13.2 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.kimre.com/",
+    "details": "Kimre operates as a global B2B industrial manufacturer utilizing a customized WordPress CMS, standard jQuery for frontend functionality, and Vimeo for embedding technical demonstrations. The site, focused on B2B lead generation, relies on manual, form-based inquiries for industrial RFQs rather than consumer-facing automation. Analyze the site's technical structure directly at kimre.com"
+  },
+  {
+    "name": "LUDECA Inc.",
+    "headquarters": "Doral, Florida, United States",
+    "estimated-revenue": "$36.9 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://ludeca.com/",
+    "details": "LUDECA's website utilizes a customized WordPress framework featuring jQuery and Backbone.js to manage complex industrial product catalogs and technical documentation. The platform, designed for B2B industrial asset management, utilizes specialized, non-automated forms for technical support and high-value procurement requests. More details can be found at RocketReach."
+  },
+  {
+    "name": "Miller-Leaman, Inc.",
+    "headquarters": "Daytona Beach, Florida, United States",
+    "estimated-revenue": "$7.5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://millerleaman.com/",
+    "details": "Miller Leaman is an industrial manufacturer of commercial water filtration and HVAC cooling tower strainers, not a residential HVAC contractor, with a site focused on B2B inquiries and technical product documentation. The website operates without consumer-facing scheduling widgets, utilizing a traditional contact form for inquiries, SolidWorks for 3D modeling, and WordPress to deliver, technical,, or,, engineering, data. For more details, visit Miller Leaman."
+  },
+  {
+    "name": "Mooneyham Heating and Air Conditioning, Inc",
+    "headquarters": "Milton, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "url": "http://www.mooneyhamhvac.com/",
+    "details": "Mooneyham Heating & Air Conditioning utilizes a traditional, brochure-style website with low-tech infrastructure that relies on manual, offline customer engagement. The site lacks automated scheduling, live chat, or third-party CRM integrations, favoring a manual operational model. For more details, visit mooneyhamhvac.com."
+  },
+  {
+    "name": "Perdido Heating and Air Conditioning",
+    "headquarters": "Pensacola, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.perdidoheatingandair.com/",
+    "details": "Perdido Heating and Air utilizes a WordPress-based website featuring integrated online scheduling, an interactive pricing calculator, and embedded financing options for immediate lead generation. The platform prioritizes customer conversion through live chat tools and integrated, third-party verified reviews. For more details, visit Perdido Heating and Air."
+  },
+  {
+    "name": "Pilar Services, Inc.",
+    "headquarters": "Miami, Florida, United States",
+    "estimated-revenue": "$7.1 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://pilarservices.com/",
+    "details": "Pilar Services utilizes a customized WordPress framework with Genesis Theme architecture, hosted on Microsoft Azure, to serve large-scale enterprise, commercial, and government HVAC contracts. The platform prioritizes manual RFQs and offline client management, purposefully avoiding consumer-facing booking widgets. For further company information, visit ZoomInfo."
+  },
+  {
+    "name": "Plastec Ventilation Inc.",
+    "type": "Manufacturer",
+    "headquarters": "Bradenton, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.plastecventilation.com/",
+    "details": "Plastec Ventilation utilizes a Shopify-based e-commerce platform tailored for B2B industrial manufacturing, focusing on technical product catalogs rather than residential service. The site features specialized tools, including the proprietary ZEPHYR software for fan selection and technical document delivery for commercial clients. Explore the platform at Plastec Ventilation."
+  },
+  {
+    "name": "ProCalcs",
+    "headquarters": "Delray Beach, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://procalcs.net/",
+    "details": "ProCalcs.net is a national B2B/B2C HVAC engineering firm specialized in load calculations and design, built on WordPress with a focus on blueprint submission rather than field repairs. The site features custom intake forms and educational content through "ProCalcs University" to serve architects, builders, and homeowners. Explore their services at ProCalcs.net."
+  },
+  {
+    "name": "Protec",
+    "headquarters": "Miami, Florida, United States",
+    "estimated-revenue": "$13.5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.protecinc.com/",
+    "details": "Protec, Inc. operates as a B2B commercial HVAC manufacturer representative serving Florida, Latin America, and the Caribbean, utilizing a Wix-based website architecture to support its engineering-focused, non-residential business model. The site bypasses consumer-facing automation, such as booking widgets or chat tools, relying instead on direct contact methods for scheduling and inquiries. For more details, visit Protec, Inc."
+  },
+  {
+    "name": "Q-PAC",
+    "headquarters": "Gainesville, Florida, United States",
+    "estimated-revenue": "$8 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.q-pac.com/",
+    "details": "Q-PAC is a B2B manufacturer of commercial, custom multi-motor plenum fan arrays that utilizes the Acumatica Cloud ERP for managing complex production, inventory, and engineering-to-order processes. Their infrastructure is supported by HubSpot for industrial lead management and eBizCharge for secure, automated business payments. For more details, visit Acumatica."
+  },
+  {
+    "name": "QE Quality",
+    "headquarters": "Miami, Florida, United States",
+    "estimated-revenue": "$12 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://qequality.com/",
+    "details": "QE QUALITY is a global B2B supplier specializing in the design, manufacturing, and wholesale distribution of HVAC/R products rather than a residential service contractor. Based in Miami, the company utilizes a customized e-commerce platform for product sourcing and processes orders through direct corporate channels, bypassing local consumer dispatch software. Explore the wholesale operations directly through the QE QUALITY Online Store."
+  },
+  {
+    "name": "Quest Controls Inc.",
+    "headquarters": "Palmetto, Florida, United States",
+    "estimated-revenue": "$10.4 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://questcontrols.com/",
+    "details": "Quest Controls is a Florida-based B2B industrial IoT company specializing in proprietary, enterprise-level facility management software (OspreyFMS®) and hardware, including TELSEC® controllers, for telecom and data center infrastructure. The company focuses on large-scale, secure, and automated environmental monitoring and HVAC management, bypassing consumer-facing booking tools in favor of industrial, web-based systems. For more details, visit Quest Controls."
+  },
+  {
+    "name": "R & Y A/C Compressors",
+    "headquarters": "Miami, Florida, United States",
+    "estimated-revenue": "$16.1 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.rycompressors.com/",
+    "details": "R & Y A/C Compressors functions as a high-volume B2C and B2B e-commerce platform specializing in automotive climate control parts, utilizing a custom system designed for heavy catalog search-by-vehicle functionality. The site handles orders through automated online carts, supports major payment methods, and manages customer reputation through verified third-party feedback platforms. For more details, visit rycompressors.com."
+  },
+  {
+    "name": "RCD Corporation",
+    "headquarters": "DeLand, Florida, United States",
+    "estimated-revenue": "$6 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://www.rcdmastics.com/",
+    "details": "RCD Corporation (rcdmastics.com) operates as a B2B manufacturer of air duct sealants, mastics, and adhesives, utilizing a WordPress-based site for technical product catalogs and data sheets. The platform focuses on supplying wholesalers and engineers, prioritizing information delivery over consumer-facing booking or service automation. For more details, visit RCD Corporation."
+  },
+  {
+    "name": "RefTec International Systems, LLC",
+    "type": "Manufacturer",
+    "headquarters": "Largo, Florida, United States",
+    "estimated-revenue": "<$5 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://reftec.com/",
+    "details": "RefTec International Systems operates as a global B2B manufacturer specializing in custom commercial refrigerant recovery systems, utilizing a WordPress-based platform focused on technical documentation and parts ordering. The site prioritizes industrial lead generation through RFQ forms rather than consumer-facing automated tools, relying on offline sales channels for client engagement. For more details, visit RefTec."
+  },
+  {
+    "name": "Rocket Group",
+    "type": "Consulting Agency",
+    "headquarters": "Tampa, Florida, United States",
+    "estimated-revenue": "$5 Million - $10 Million",
+    "estimated-headcount": "11-50",
+    "url": "https://hvacinsider.com/rocket-group-expands-into-florida-market-with-13th-partnership/",
+    "details": "Rocket Group Holdings is a private investment fund and coaching accelerator founded by Victor Rancour that provides training, operational consulting, and M&A services to home service and HVAC owners. The platform facilitates B2B lead generation, events, and training through custom web forms and a dedicated e-commerce engine for business growth. Learn more at rocketgroupholdings.com."
+  }
+]
