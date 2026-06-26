@@ -13,6 +13,7 @@ include:
   - triton/docker-compose.yml
   - virtuoso/docker-compose.yml
   - mcp/docker-compose.yml
+  - apps/voiceDataEntry/docker-compose.yml
   
 services:
   postgres:
