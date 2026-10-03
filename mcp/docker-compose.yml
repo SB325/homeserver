@@ -35,10 +35,12 @@ services:
       BRAVE_API_KEY: ${BRAVE_SEARCH_KEY}
       BRAVE_MCP_TRANSPORT: http
       BRAVE_MCP_LOG_LEVEL: info
+      BRAVE_MCP_HOST: 0.0.0.0
+      BRAVE_MCP_PORT: 8005
       # BRAVE_MCP_ENABLED_TOOLS:  # When used, specifies a space-separated whitelist for supported tools
       # BRAVE_MCP_DISABLED_TOOLS:  # When used, specifies a space-separated blacklist for supported tools
     ports:
-      - 8005:8000
+      - 8005:8005
     profiles:
       - agenttools
     networks:
@@ -53,6 +55,8 @@ services:
     environment:
       FIRECRAWL_API_KEY: ${FIRECRAWL_KEY}
       HTTP_STREAMABLE_SERVER: true
+      PORT: 3001
+      HOST: 0.0.0.0
       # FIRECRAWL_RETRY_MAX_ATTEMPTS: 5
       # FIRECRAWL_RETRY_INITIAL_DELAY: 2000
       # FIRECRAWL_RETRY_MAX_DELAY: 20000
@@ -60,7 +64,7 @@ services:
       # FIRECRAWL_CREDIT_WARNING_THRESHOLD: 2000
       # FIRECRAWL_CREDIT_CRITICAL_THRESHOLD: 500
     ports:
-      - 3001:3000
+      - 3001:3001
     profiles:
       - agenttools
     networks:

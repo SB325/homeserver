@@ -14,6 +14,7 @@ include:
   - virtuoso/docker-compose.yml
   - mcp/docker-compose.yml
   - apps/voiceDataEntry/docker-compose.yml
+  - apps/AutoGraphAI/src/highlighter/docker-compose.yml
   
 services:
   postgres:

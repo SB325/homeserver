@@ -27,7 +27,8 @@ MODELS_LIST=(
     # "Falconsai/nsfw_image_detection"                    # "NSFW image model"
     # "protectai/deberta-v3-base-prompt-injection"        # "Prompt Injection classifier"
     # fastino/gliner2-large-v1                            # Gliner Structured Extraction
-    spacy/en_core_web_sm                                # spacy
+    # spacy/en_core_web_sm                                # spacy
+    pyannote/speaker-diarization-3.1                    # speech diarizaation (speaker labeling)
 )
 
 # 2. Define where the repository should be created

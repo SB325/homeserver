@@ -39,6 +39,5 @@ RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Set environment variables for API key and custom API URL if needed
 
-
 # Specify the command to run the application
 ENTRYPOINT ["node", "dist/index.js"]
