@@ -71,32 +71,32 @@ services:
      - homeserver
     container_name: firecrawl-mcp
 
-  postgres-mcp:
-    build: 
-      context: ./servers/postgres
-    image: postgres-mcp:latest
-    restart: unless-stopped
-    # environment:
-    profiles:
-      - agenttools
-    networks:
-     - homeserver
-    container_name: postgres-mcp
+  # postgres-mcp:
+  #   build: 
+  #     context: ./servers/postgres
+  #   image: postgres-mcp:latest
+  #   restart: unless-stopped
+  #   # environment:
+  #   profiles:
+  #     - agenttools
+  #   networks:
+  #    - homeserver
+  #   container_name: postgres-mcp
 
-  time-mcp:
-    build: 
-      context: ./servers/time
-      args: 
-        - LOCAL_TZ=America/New_York
-    image: time-mcp:latest
-    restart: unless-stopped
-    ports:
-      - 8007:8000
-    environment:
-      TZ: America/New_York
-      LOCAL_TIMEZONE: America/New_York
-    profiles:
-      - agenttools
-    networks:
-     - homeserver
-    container_name: mcp-time  
+  # time-mcp:
+  #   build: 
+  #     context: ./servers/time
+  #     args: 
+  #       - LOCAL_TZ=America/New_York
+  #   image: time-mcp:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8007:8000
+  #   environment:
+  #     TZ: America/New_York
+  #     LOCAL_TIMEZONE: America/New_York
+  #   profiles:
+  #     - agenttools
+  #   networks:
+  #    - homeserver
+  #   container_name: mcp-time  

@@ -1,0 +1,47 @@
+services:
+  kev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kev-serve:local
+    container_name: kev-serve
+    restart: unless-stopped
+    ports:
+      - "${KEV_PORT:-8009}:8009"
+    environment:
+      - HF_HOME=/models
+      - KEV_DTYPE=${KEV_DTYPE:-bf16}
+    command:
+      - "uv"
+      - "run"
+      - "--extra"
+      - "serve"
+      - "python"
+      - "-m"
+      - "kev.serve"
+      - "--run"
+      - "${KEV_MODEL:-jaredpalmer/kev-0.8b}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8009"
+    volumes:
+      - ${KEV_MODEL_STORAGE}/models:/models
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ["0"]
+    #           capabilities: [gpu]
+    shm_size: "2g"
+    profiles:
+      - agenttools
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8009/v1/models || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - homeserver

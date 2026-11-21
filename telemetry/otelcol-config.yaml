@@ -22,6 +22,16 @@ receivers:
           scrape_interval: 1s
           static_configs:
             - targets: ["127.0.0.1:8888"]
+        - job_name: 'nvidia-gpu-metrics'
+          scrape_interval: 5s
+          static_configs:
+            - targets: ['dgcm-exporter:9400']
+          metric_relabel_configs:
+            # Filter specifically for GPU utilization and workload metrics
+            - source_labels: [__name__]
+              regex: 'DCGM_FI_DEV_.*'
+              # regex: 'DCGM_FI_DEV_GPU_UTIL|DCGM_FI_DEV_MEM_CLOCK|DCGM_FI_DEV_SM_CLOCK|DCGM_FI_DEV_FB_USED|DCGM_FI_DEV_FB_FREE|DCGM_FI_DEV_FB_TOTAL'
+              action: keep
 
 processors:
   batch:
@@ -32,10 +42,12 @@ extensions:
     path: "/ready"
 
 exporters:
-  otlphttp/metrics:
-    endpoint: http://prometheus:9090/api/v1/otlp
-    tls:
-      insecure: true
+  # otlphttp/metrics:
+  #   endpoint: http://prometheus:9090/api/v1/otlp
+  #   tls:
+  #     insecure: true
+  otlp:
+    endpoint: http://dgcm-exporter:9400
   otlphttp/traces:
     endpoint: http://tempo:3200
     tls:
@@ -66,7 +78,7 @@ service:
     metrics:
       receivers: [otlp, hostmetrics, prometheus/collector]
       processors: [batch]
-      exporters: [prometheusremotewrite, otlphttp/metrics, debug/metrics]
+      exporters: [prometheusremotewrite, debug/metrics, otlp]
     traces:
       receivers: [otlp]
       processors: [batch]

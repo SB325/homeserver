@@ -35,7 +35,7 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ORG_ROLE=admin
-      - GF_INSTALL_PLUGINS=grafana-lokiexplore-app,grafana-pyroscope-datasource
+      - GF_INSTALL_PLUGINS=grafana-lokiexplore-app #,grafana-pyroscope-datasource
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini
       - ./provisioning:/etc/grafana/provisioning
@@ -96,6 +96,7 @@ services:
       - '--web.enable-lifecycle'
       - '--web.enable-remote-write-receiver'
       - '--enable-feature=otlp-write-receiver'
+      # - '--storage.tsdb.query.staleness-delta=1m'
     ports:
       - "9090:9090"
     volumes:
@@ -121,3 +122,23 @@ services:
     profiles:
       - telemetry
     restart: unless-stopped
+
+  gpu_telemetry:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:3.3.5-3.4.0-ubuntu22.04
+    container_name: dgcm-exporter
+    restart: unless-stopped
+    ports:
+      - "9400:9400"
+    environment:
+      - DCGM_EXPORTER_LISTEN=:9400
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    profiles:
+      - telemetry
+    networks: 
+      - homeserver

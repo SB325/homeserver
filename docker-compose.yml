@@ -10,11 +10,13 @@ include:
   - invokeai/docker-compose.yml
   - jenkins/docker-compose.yml
   - registry/docker-compose.yml
-  - triton/docker-compose.yml
+  # - triton/docker-compose.yml
   - virtuoso/docker-compose.yml
   - mcp/docker-compose.yml
-  - apps/voiceDataEntry/docker-compose.yml
+  # - apps/voiceDataEntry/docker-compose.yml
   - apps/AutoGraphAI/src/highlighter/docker-compose.yml
+  - apps/Agentic_Baseline/docker-compose.yml
+  - kev/docker-compose.yml
   
 services:
   postgres:
@@ -34,8 +36,6 @@ services:
     restart: unless-stopped
     networks:
       - homeserver
-    profiles:
-      - main
     ports:
       - "5432:5432"
     container_name: postgres_container
@@ -53,33 +53,31 @@ services:
       - "${PGADMIN_PORT}:80"
     networks:
      - homeserver
-    profiles:
-      - main
     depends_on:
      - postgres
     container_name: pgadmin
     
-  ollama:
-    image: ollama/ollama
-    restart: unless-stopped
-    user: root
-    volumes:
-        - ./ollama:/root/.ollama
-    ports:
-        - "11434:11434"
-    tty: true
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ["0"]
-              capabilities: [gpu]
-    networks:
-     - homeserver
-    profiles:
-      - llm
-    container_name: ollama
+  # ollama:
+  #   image: ollama/ollama
+  #   restart: unless-stopped
+  #   user: root
+  #   volumes:
+  #       - ./ollama:/root/.ollama
+  #   ports:
+  #       - "11434:11434"
+  #   tty: true
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             device_ids: ["0"]
+  #             capabilities: [gpu]
+  #   networks:
+  #    - homeserver
+  #   # profiles:
+  #   #   - llm
+  #   container_name: ollama
   
   # open-webui:
   #   image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
@@ -150,8 +148,9 @@ services:
       - graph
     depends_on:
       - pgadmin
-      - virtuoso
-      - registry-ui
+      - grafana
+      # - virtuoso
+      # - registry-ui
       # - milvusui
       # - open-webui
       # - neo4j
