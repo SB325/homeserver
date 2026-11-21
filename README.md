@@ -14,6 +14,7 @@ This repository contains the deployment of several services that support data ma
 |   registry    |   local container registry    |   :heavy_check_mark:      |
 |   invokeai    | AI Image Generator | :heavy_check_mark:   |
 |    ollama     |   Open Source LLM Framework   |   :heavy_check_mark:    |
+|    vLLM     |   vLLM Inference Server   |   :heavy_check_mark:    |
 |    triton     |   Triton Inference Server   |   :heavy_check_mark:    |
 |  agentgateway  |  MCP/A2A Gateway Service |           |
 |   spark    |   Scaled Data Processor    |       |
