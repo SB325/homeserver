@@ -7,6 +7,7 @@ This repository contains the deployment of several services that support data ma
 |   proxy       |  NGINX Reverse Proxy  | :heavy_check_mark:    |
 |   telemetry   |    Observability      |   :heavy_check_mark:  |
 |   langsmith   |   Agent Observability Platform   |     |
+|   kev   |  Decision making model for agent Evaluation   | :heavy_check_mark:  |
 |   kafka       |   Pub-Sub Data Logger    |   :heavy_check_mark:  |
 |   redis       |   In-Memory Cache     |   :heavy_check_mark:    |
 |   jenkins     |   CICD Pipelines              |                           |
